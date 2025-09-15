@@ -97,12 +97,13 @@ impl Rope {
             self.total_length
         }
     }
+}
 
-    /// Convert to string
-    pub fn to_string(&self) -> String {
+impl std::fmt::Display for Rope {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut result = String::with_capacity(self.total_length);
         self.collect_text(&mut result, 0, self.total_length);
-        result
+        write!(f, "{}", result)
     }
 }
 
@@ -192,8 +193,9 @@ pub struct IncrementalTree {
 }
 
 #[derive(Debug, Clone)]
-struct NodeInfo {
+pub struct NodeInfo {
     /// Node identifier (path in tree)
+    #[allow(dead_code)]
     path: Vec<usize>,
     /// Start offset
     start: usize,
@@ -218,7 +220,12 @@ impl IncrementalTree {
     }
 
     /// Index nodes by position
-    fn index_nodes(node: &Node, map: &mut BTreeMap<usize, NodeInfo>, path: &[usize], depth: usize) {
+    fn index_nodes(
+        node: &Node,
+        map: &mut BTreeMap<usize, NodeInfo>,
+        path: &[usize],
+        _depth: usize,
+    ) {
         if let Some(pos) = &node.position {
             let info = NodeInfo {
                 path: path.to_vec(),
@@ -232,7 +239,7 @@ impl IncrementalTree {
         for (i, child) in node.children.iter().enumerate() {
             let mut child_path = path.to_vec();
             child_path.push(i);
-            Self::index_nodes(child, map, &child_path, depth + 1);
+            Self::index_nodes(child, map, &child_path, _depth + 1);
         }
     }
 

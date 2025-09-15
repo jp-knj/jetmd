@@ -9,6 +9,7 @@ pub struct InlineParser {
     line: usize,
     column: usize,
     track_position: bool,
+    #[allow(dead_code)]
     link_references: HashMap<String, LinkReference>,
 }
 
@@ -439,7 +440,7 @@ impl InlineParser {
                     node.node_type = NodeType::Image;
                     // Move children text to alt
                     if !node.children.is_empty() {
-                        let alt_text = self.extract_text_from_nodes(&node.children);
+                        let alt_text = Self::extract_text_from_nodes(&node.children);
                         node.alt = Some(alt_text);
                         node.children.clear();
                     }
@@ -449,7 +450,7 @@ impl InlineParser {
                     node.node_type = NodeType::ImageReference;
                     // Move children text to alt
                     if !node.children.is_empty() {
-                        let alt_text = self.extract_text_from_nodes(&node.children);
+                        let alt_text = Self::extract_text_from_nodes(&node.children);
                         node.alt = Some(alt_text);
                         node.children.clear();
                     }
@@ -539,7 +540,7 @@ impl InlineParser {
         }
     }
 
-    fn extract_text_from_nodes(&self, nodes: &[Node]) -> String {
+    fn extract_text_from_nodes(nodes: &[Node]) -> String {
         let mut text = String::new();
         for node in nodes {
             match node.node_type {
@@ -549,7 +550,7 @@ impl InlineParser {
                     }
                 }
                 _ => {
-                    text.push_str(&self.extract_text_from_nodes(&node.children));
+                    text.push_str(&Self::extract_text_from_nodes(&node.children));
                 }
             }
         }

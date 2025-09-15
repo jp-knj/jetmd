@@ -50,10 +50,11 @@ pub struct Node {
     pub identifier: Option<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub enum NodeType {
     // Document
+    #[default]
     Root,
 
     // Block
@@ -98,12 +99,6 @@ pub enum NodeType {
     ContainerDirective,
     LeafDirective,
     TextDirective,
-}
-
-impl Default for NodeType {
-    fn default() -> Self {
-        NodeType::Root
-    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

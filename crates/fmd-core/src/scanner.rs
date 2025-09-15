@@ -321,7 +321,7 @@ impl<'a> Scanner<'a> {
             if !content.is_empty() {
                 content.push('\n');
             }
-            content.push_str(&self.input[line_start..self.position].trim_end());
+            content.push_str(self.input[line_start..self.position].trim_end());
             self.advance_line();
         }
 

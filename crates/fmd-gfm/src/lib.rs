@@ -31,6 +31,7 @@ pub struct GfmExtensions {
     enable_tables: bool,
     enable_strikethrough: bool,
     enable_autolinks: bool,
+    #[allow(dead_code)]
     enable_task_lists: bool,
 }
 
@@ -103,7 +104,7 @@ impl GfmExtensions {
         let mut nodes = Vec::new();
 
         // Apply autolinks first
-        let mut current_nodes = if self.enable_autolinks {
+        let current_nodes = if self.enable_autolinks {
             autolink::AutolinkParser::process_autolinks(text)
         } else {
             vec![Node {

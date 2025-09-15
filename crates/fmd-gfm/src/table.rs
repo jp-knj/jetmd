@@ -1,6 +1,6 @@
 // GFM table parser
 
-use fmd_core::{Node, NodeType, Position};
+use fmd_core::{Node, NodeType};
 
 pub struct TableParser {
     track_position: bool,
@@ -12,7 +12,7 @@ impl TableParser {
     }
 
     /// Try to parse a table from lines
-    pub fn parse_table(&self, lines: &[String], start_line: usize) -> Option<Node> {
+    pub fn parse_table(&self, lines: &[String], _start_line: usize) -> Option<Node> {
         if lines.len() < 2 {
             return None;
         }

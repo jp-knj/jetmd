@@ -76,14 +76,14 @@ pub struct Edit {
     pub text: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct IncrementalSession {
     tree: Option<Node>,
 }
 
 impl IncrementalSession {
     pub fn new() -> Self {
-        Self { tree: None }
+        Self::default()
     }
 
     pub fn has_tree(&self) -> bool {
@@ -139,7 +139,7 @@ pub fn parse(doc: &Document, options: ProcessorOptions) -> ParseResult {
     let mut total_nodes = 1; // Count root
 
     for token in block_tokens {
-        let node = build_node_from_token(token, &options);
+        let node = build_node_from_token(token, options);
         total_nodes += count_nodes(&node);
         root.children.push(node);
     }
@@ -162,7 +162,7 @@ pub fn parse(doc: &Document, options: ProcessorOptions) -> ParseResult {
     }
 }
 
-fn build_node_from_token(token: scanner::BlockToken, options: &ProcessorOptions) -> Node {
+fn build_node_from_token(token: scanner::BlockToken, options: ProcessorOptions) -> Node {
     use inline::InlineParser;
     use scanner::BlockTokenType;
 
@@ -194,7 +194,7 @@ fn build_node_from_token(token: scanner::BlockToken, options: &ProcessorOptions)
         BlockTokenType::Blockquote => {
             // Recursively parse blockquote content
             let inner_doc = Document::new(&token.content);
-            let inner_result = parse(&inner_doc, options.clone());
+            let inner_result = parse(&inner_doc, options);
             Node {
                 node_type: NodeType::Blockquote,
                 children: inner_result.ast.children,
@@ -205,7 +205,7 @@ fn build_node_from_token(token: scanner::BlockToken, options: &ProcessorOptions)
         BlockTokenType::ListItem { ordered, .. } => {
             // Parse list item content
             let inner_doc = Document::new(&token.content);
-            let inner_result = parse(&inner_doc, options.clone());
+            let inner_result = parse(&inner_doc, options);
             Node {
                 node_type: NodeType::ListItem,
                 children: inner_result.ast.children,
@@ -238,7 +238,7 @@ fn count_nodes(node: &Node) -> usize {
 pub fn parse_incremental(
     doc: &Document,
     options: ProcessorOptions,
-    previous_ast: &Node,
+    _previous_ast: &Node,
     cache: &mut IncrementalCache,
 ) -> ParseResult {
     use incremental::{calculate_diff, content_hash};

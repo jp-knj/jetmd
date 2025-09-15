@@ -11,14 +11,20 @@ pub struct PositionTracker {
     line_starts: Vec<usize>,
 }
 
-impl PositionTracker {
-    pub fn new() -> Self {
+impl Default for PositionTracker {
+    fn default() -> Self {
         Self {
             line: 1,
             column: 1,
             offset: 0,
             line_starts: vec![0],
         }
+    }
+}
+
+impl PositionTracker {
+    pub fn new() -> Self {
+        Self::default()
     }
 
     /// Advance position by a character

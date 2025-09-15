@@ -1,6 +1,6 @@
 // MDX core parsing and transformation
 
-use fmd_core::{Node, NodeType};
+use fmd_core::Node;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -33,6 +33,7 @@ impl Default for MdxOptions {
 }
 
 pub struct MdxParser {
+    #[allow(dead_code)]
     options: MdxOptions,
 }
 
@@ -41,26 +42,26 @@ impl MdxParser {
         Self { options }
     }
 
-    pub fn parse_jsx_element(&self, input: &str) -> Option<Node> {
+    pub fn parse_jsx_element(&self, _input: &str) -> Option<Node> {
         // TODO: Implement JSX element parsing
         // This will parse <Component prop="value">content</Component>
         None
     }
 
-    pub fn parse_jsx_expression(&self, input: &str) -> Option<Node> {
+    pub fn parse_jsx_expression(&self, _input: &str) -> Option<Node> {
         // TODO: Implement JSX expression parsing
         // This will parse {expression}
         None
     }
 
-    pub fn parse_esm_import(&self, input: &str) -> Option<Node> {
+    pub fn parse_esm_import(&self, _input: &str) -> Option<Node> {
         // TODO: Implement ESM import/export parsing
         // This will parse import/export statements
         None
     }
 }
 
-pub fn transform_mdx_ast(ast: Node, options: MdxOptions) -> TransformResult {
+pub fn transform_mdx_ast(ast: Node, _options: MdxOptions) -> TransformResult {
     // TODO: Transform MDX AST to include JSX nodes
     TransformResult {
         ast,
@@ -76,7 +77,7 @@ pub struct TransformResult {
     pub exports: Vec<String>,
 }
 
-pub fn compile_to_js(ast: Node, options: MdxOptions) -> String {
+pub fn compile_to_js(_ast: Node, options: MdxOptions) -> String {
     // TODO: Compile MDX AST to JavaScript/JSX
     let mut output = String::new();
 

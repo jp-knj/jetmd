@@ -3,7 +3,7 @@ use crate::Node;
 use std::collections::HashMap;
 
 /// Cache for incremental parsing
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct IncrementalCache {
     /// Cached nodes by content hash
     node_cache: HashMap<u64, Node>,
@@ -12,16 +12,12 @@ pub struct IncrementalCache {
     /// Statistics
     hits: usize,
     misses: usize,
+    pub total_reuse: usize,
 }
 
 impl IncrementalCache {
     pub fn new() -> Self {
-        Self {
-            node_cache: HashMap::new(),
-            line_cache: HashMap::new(),
-            hits: 0,
-            misses: 0,
-        }
+        Self::default()
     }
 
     /// Get the cache size

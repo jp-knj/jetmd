@@ -17,8 +17,7 @@
       },
       "style": {
         "noNonNullAssertion": "warn",
-        "useConst": "error",
-        "useImportType": "error"
+        "useConst": "error"
       }
     }
   },
@@ -35,7 +34,7 @@
       "quoteStyle": "single",
       "jsxQuoteStyle": "double",
       "semicolons": "asNeeded",
-      "trailingCommas": "all",
+      "trailingComma": "all",
       "arrowParentheses": "always"
     }
   },

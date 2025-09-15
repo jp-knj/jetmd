@@ -10,7 +10,9 @@ rust-version.workspace = true
 description = "Core parser and AST for faster-md"
 
 [dependencies]
+memchr = "2.7"
 serde = { workspace = true }
+serde_json = { workspace = true }
 thiserror = { workspace = true }
 
 [dev-dependencies]

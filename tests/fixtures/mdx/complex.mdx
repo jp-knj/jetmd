@@ -1,0 +1,31 @@
+import { Chart } from './components/Chart'
+import { Table } from './components/Table'
+export const data = [1, 2, 3, 4, 5]
+
+# Complex MDX Example
+
+<Table data={data.map(n => ({ value: n * 2 }))} />
+
+## Expressions
+
+The sum is {data.reduce((a, b) => a + b, 0)}.
+
+<Chart>
+  {data.map(n => (
+    <Bar key={n} value={n} />
+  ))}
+</Chart>
+
+## Nested Components
+
+<Card>
+  <CardHeader>
+    # Markdown in JSX
+    
+    This is **bold** and *italic*.
+  </CardHeader>
+  <CardBody>
+    - List item 1
+    - List item 2
+  </CardBody>
+</Card>

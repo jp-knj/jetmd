@@ -1,2 +1,118 @@
-# editor
-.idea
+# Editor and IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.fleet/
+.zed/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+Desktop.ini
+.Spotlight-V100
+.Trashes
+
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+out/
+*.wasm
+*.wasm.d.ts
+pkg/
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Environment and config
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.local.json
+.claude/settings.local.json
+
+# Logs
+logs/
+*.log
+lerna-debug.log*
+
+# Package manager files
+.npm/
+.yarn/
+.pnp.*
+.yarn-integrity
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+.cache/
+
+# Documentation build
+docs/_build/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
+# Benchmark results
+benchmarks/results/
+*.bench
+
+# Debug files
+*.map
+*.map.json
+
+# Backup files
+*.backup
+*.bak
+*.orig
+
+# Archive files
+*.zip
+*.tar.gz
+*.tgz
+*.rar
+
+# Serena MCP
+.serena/
+
+# WASM build artifacts
+crates/*/pkg/
+wasm-pack.log
+
+# MDX/Markdown build cache
+.mdx-cache/
+.md-cache/
+
+# Release artifacts
+release/
+artifacts/
+
+# Local development
+.local/
+scratch/
+playground/

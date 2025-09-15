@@ -52,7 +52,6 @@ codegen-units = 1
 
 [profile.release.package.fmd-wasm]
 opt-level = "z"  # Optimize for size in WASM
-lto = true
 
 [profile.dev]
 opt-level = 0

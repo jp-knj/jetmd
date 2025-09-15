@@ -1,6 +1,6 @@
 // WASM HTML rendering module
 use fmd_core::{Document, ProcessorOptions};
-use fmd_html::{render_html, sanitize::SanitizeOptions, HtmlOptions};
+use fmd_html::{render_html as fmd_render_html, sanitize::SanitizeOptions, HtmlOptions};
 use serde_wasm_bindgen::{from_value, to_value};
 use wasm_bindgen::prelude::*;
 

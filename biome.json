@@ -35,7 +35,7 @@
       "quoteStyle": "single",
       "jsxQuoteStyle": "double",
       "semicolons": "asNeeded",
-      "trailingComma": "all",
+      "trailingCommas": "all",
       "arrowParentheses": "always"
     }
   },

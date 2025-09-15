@@ -78,7 +78,7 @@ fn main() -> Result<()> {
             write_output(cli.output.as_ref(), &ast)?;
         }
         Some(Commands::Bench { input, iterations }) => {
-            let content = fs::read_to_string(&input)
+            let content = fs::read_to_string(input)
                 .with_context(|| format!("Failed to read file: {}", input.display()))?;
             benchmark(&content, *iterations)?;
         }

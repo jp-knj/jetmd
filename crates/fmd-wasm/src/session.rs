@@ -100,7 +100,8 @@ impl ParseSession {
     }
 
     /// Get session statistics
-    pub fn getStats(&self) -> Result<JsValue, JsValue> {
+    #[wasm_bindgen(js_name = getStats)]
+    pub fn get_stats(&self) -> Result<JsValue, JsValue> {
         let stats = serde_json::json!({
             "sessionId": self.session_id,
             "parseCount": self.parse_count,
@@ -126,21 +127,28 @@ pub struct SessionManager {
     max_sessions: usize,
 }
 
-#[wasm_bindgen]
-impl SessionManager {
-    #[wasm_bindgen(constructor)]
-    pub fn new() -> Self {
+impl Default for SessionManager {
+    fn default() -> Self {
         Self {
             sessions: HashMap::new(),
             max_sessions: 100,
         }
     }
+}
+
+#[wasm_bindgen]
+impl SessionManager {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        Self::default()
+    }
 
     /// Create a new session
-    pub fn createSession(&mut self, session_id: Option<String>) -> String {
+    #[wasm_bindgen(js_name = createSession)]
+    pub fn create_session(&mut self, session_id: Option<String>) -> String {
         // Clean up old sessions if we're at the limit
         if self.sessions.len() >= self.max_sessions {
-            self.cleanupOldSessions();
+            self.cleanup_old_sessions();
         }
 
         let session = ParseSession::new(session_id);
@@ -150,22 +158,25 @@ impl SessionManager {
     }
 
     /// Get an existing session
-    pub fn getSession(&mut self, session_id: &str) -> Option<ParseSession> {
+    #[wasm_bindgen(js_name = getSession)]
+    pub fn get_session(&mut self, session_id: &str) -> Option<ParseSession> {
         self.sessions.remove(session_id)
     }
 
     /// Remove a session
-    pub fn removeSession(&mut self, session_id: &str) -> bool {
+    #[wasm_bindgen(js_name = removeSession)]
+    pub fn remove_session(&mut self, session_id: &str) -> bool {
         self.sessions.remove(session_id).is_some()
     }
 
     /// Get all session IDs
-    pub fn listSessions(&self) -> Vec<JsValue> {
+    #[wasm_bindgen(js_name = listSessions)]
+    pub fn list_sessions(&self) -> Vec<JsValue> {
         self.sessions.keys().map(|k| JsValue::from_str(k)).collect()
     }
 
     /// Clean up old sessions (keeps most recent half)
-    fn cleanupOldSessions(&mut self) {
+    fn cleanup_old_sessions(&mut self) {
         let to_remove = self.sessions.len() / 2;
         let mut keys: Vec<_> = self.sessions.keys().cloned().collect();
         keys.truncate(to_remove);

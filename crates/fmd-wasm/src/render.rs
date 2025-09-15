@@ -38,12 +38,12 @@ pub fn render_html(content: &str, options: JsValue) -> Result<String, JsValue> {
         html_opts.xhtml = xhtml;
     }
 
-    Ok(render_html(&parse_result.ast, html_opts))
+    Ok(fmd_render_html(&parse_result.ast, html_opts))
 }
 
 /// Render with custom sanitization options
-#[wasm_bindgen(js_name = renderHtml)]
-pub fn render_htmlSafe(content: &str) -> Result<String, JsValue> {
+#[wasm_bindgen(js_name = renderHtmlSafe)]
+pub fn render_html_safe(content: &str) -> Result<String, JsValue> {
     let doc = Document::new(content);
     let parse_result = fmd_core::parse(&doc, ProcessorOptions::default());
 
@@ -55,12 +55,12 @@ pub fn render_htmlSafe(content: &str) -> Result<String, JsValue> {
     html_opts.sanitize = true;
     html_opts.sanitize_options = SanitizeOptions::strict();
 
-    Ok(render_html(&parse_result.ast, html_opts))
+    Ok(fmd_render_html(&parse_result.ast, html_opts))
 }
 
 /// Render with GFM extensions
-#[wasm_bindgen(js_name = renderHtml)]
-pub fn renderGfm(content: &str, options: JsValue) -> Result<String, JsValue> {
+#[wasm_bindgen(js_name = renderGfm)]
+pub fn render_gfm(content: &str, options: JsValue) -> Result<String, JsValue> {
     let mut processor_opts = ProcessorOptions::default();
     processor_opts.gfm = true;
 
@@ -87,12 +87,12 @@ pub fn renderGfm(content: &str, options: JsValue) -> Result<String, JsValue> {
         return Err(JsValue::from_str("GFM parse error"));
     }
 
-    Ok(render_html(&parse_result.ast, HtmlOptions::default()))
+    Ok(fmd_render_html(&parse_result.ast, HtmlOptions::default()))
 }
 
 /// Get render statistics
-#[wasm_bindgen(js_name = renderHtml)]
-pub fn getRenderStats(content: &str) -> Result<JsValue, JsValue> {
+#[wasm_bindgen(js_name = getRenderStats)]
+pub fn get_render_stats(content: &str) -> Result<JsValue, JsValue> {
     let start = js_sys::Date::now();
 
     let doc = Document::new(content);
@@ -100,7 +100,7 @@ pub fn getRenderStats(content: &str) -> Result<JsValue, JsValue> {
     let parse_time = js_sys::Date::now() - start;
 
     let render_start = js_sys::Date::now();
-    let html = render_html(&parse_result.ast, HtmlOptions::default());
+    let html = fmd_render_html(&parse_result.ast, HtmlOptions::default());
     let render_time = js_sys::Date::now() - render_start;
 
     let stats = serde_json::json!({

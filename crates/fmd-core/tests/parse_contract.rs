@@ -1,7 +1,7 @@
 // Contract tests for parse() function
 // These tests define the expected API and MUST FAIL until implementation
 
-use fmd_core::{parse, Document, Node, ParseResult, Position, ProcessorOptions};
+use fmd_core::{parse, Document, NodeType, ParseResult, ProcessorOptions};
 
 #[test]
 #[ignore = "Implementation not complete - will fail"]
@@ -13,7 +13,7 @@ fn test_parse_basic_document() {
 
     assert!(result.success);
     assert_eq!(result.errors.len(), 0);
-    assert_eq!(result.ast.node_type, "root");
+    assert_eq!(result.ast.node_type, NodeType::Root);
     assert_eq!(result.ast.children.len(), 2);
 }
 
@@ -44,7 +44,7 @@ fn test_parse_empty_document() {
     let result = parse(&doc, Default::default());
 
     assert!(result.success);
-    assert_eq!(result.ast.node_type, "root");
+    assert_eq!(result.ast.node_type, NodeType::Root);
     assert_eq!(result.ast.children.len(), 0);
 }
 
@@ -82,10 +82,10 @@ fn test_parse_nested_structures() {
 
     assert!(result.success);
     let blockquote = &result.ast.children[1];
-    assert_eq!(blockquote.node_type, "blockquote");
+    assert_eq!(blockquote.node_type, NodeType::Blockquote);
 
     let list = &blockquote.children[0];
-    assert_eq!(list.node_type, "list");
+    assert_eq!(list.node_type, NodeType::List);
 }
 
 #[test]

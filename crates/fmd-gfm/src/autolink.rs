@@ -94,9 +94,11 @@ impl AutolinkParser {
                 at_pos = end_pos;
             } else if ch == b'.' && has_at {
                 has_dot_after_at = true;
-            } else if ch.is_ascii_whitespace() || ch == b'<' || ch == b'>' {
-                break;
-            } else if !ch.is_ascii_alphanumeric() && !matches!(ch, b'-' | b'_' | b'.' | b'+') {
+            } else if ch.is_ascii_whitespace()
+                || ch == b'<'
+                || ch == b'>'
+                || (!ch.is_ascii_alphanumeric() && !matches!(ch, b'-' | b'_' | b'.' | b'+'))
+            {
                 break;
             }
 

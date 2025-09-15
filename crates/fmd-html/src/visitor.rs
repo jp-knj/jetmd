@@ -12,18 +12,26 @@ pub struct HtmlVisitor {
 
 #[derive(Debug, Clone)]
 struct ListContext {
+    #[allow(dead_code)]
     ordered: bool,
+    #[allow(dead_code)]
     start: usize,
     tight: bool,
 }
 
-impl HtmlVisitor {
-    pub fn new() -> Self {
+impl Default for HtmlVisitor {
+    fn default() -> Self {
         Self {
             output: String::with_capacity(1024),
             in_pre: false,
             list_stack: Vec::new(),
         }
+    }
+}
+
+impl HtmlVisitor {
+    pub fn new() -> Self {
+        Self::default()
     }
 
     /// Visit a node and generate HTML
@@ -36,7 +44,7 @@ impl HtmlVisitor {
             }
             NodeType::Paragraph => {
                 // Don't wrap in <p> if in tight list
-                let in_tight_list = self.list_stack.last().map_or(false, |ctx| ctx.tight);
+                let in_tight_list = self.list_stack.last().is_some_and(|ctx| ctx.tight);
                 if !in_tight_list {
                     self.output.push_str("<p>");
                 }
@@ -55,7 +63,7 @@ impl HtmlVisitor {
                 for child in &node.children {
                     self.visit(child);
                 }
-                write!(self.output, "</h{}>\n", depth).unwrap();
+                writeln!(self.output, "</h{}>", depth).unwrap();
             }
             NodeType::ThematicBreak => {
                 self.output.push_str("<hr />\n");
@@ -271,9 +279,9 @@ impl HtmlVisitor {
             NodeType::FootnoteDefinition => {
                 // Footnotes need special handling
                 if let Some(id) = &node.identifier {
-                    write!(
+                    writeln!(
                         self.output,
-                        "<div class=\"footnote\" id=\"fn-{}\">\n",
+                        "<div class=\"footnote\" id=\"fn-{}\">",
                         escape_attr(id)
                     )
                     .unwrap();
@@ -320,7 +328,7 @@ impl HtmlVisitor {
     }
 
     /// Check if a list is tight (no blank lines between items)
-    fn is_tight_list(&self, list: &Node) -> bool {
+    fn is_tight_list(&self, _list: &Node) -> bool {
         // Simplified check - would need to analyze spacing
         true
     }

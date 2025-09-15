@@ -17,12 +17,16 @@
         "noUselessConstructor": "error"
       },
       "correctness": {
-        "noUnusedVariables": "warn",
+        "noUnusedVariables": "off",
         "useExhaustiveDependencies": "warn"
+      },
+      "suspicious": {
+        "noAssignInExpressions": "off"
       },
       "style": {
         "noNonNullAssertion": "warn",
-        "useConst": "error"
+        "useConst": "error",
+        "noParameterAssign": "off"
       }
     }
   },

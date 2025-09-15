@@ -1,7 +1,6 @@
 // Processor class for faster-md
 // Provides a unified, chainable API for markdown processing with plugin support
 
-import { getWasmInstance } from './loader.js'
 import { createParseSession, parse, parseIncremental, parseSync } from './parse.js'
 import { renderHtml, renderHtmlSync } from './render.js'
 

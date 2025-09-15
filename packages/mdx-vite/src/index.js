@@ -1,7 +1,6 @@
 // Vite plugin for MDX
 // Transforms .mdx files into ES modules
 
-import { readFile } from 'node:fs/promises'
 import { createFilter } from '@rollup/pluginutils'
 import { compileMdx } from 'mdx-compiler'
 import { SourceMapGenerator } from 'source-map'

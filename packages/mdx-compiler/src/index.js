@@ -1,7 +1,6 @@
 // MDX compiler - Compiles MDX to ES modules
 export const VERSION = '0.1.0'
 
-import { parse } from 'faster-md'
 import { createCodeGenerator } from './codegen.js'
 import { createJsxParser } from './jsx.js'
 import { createTokenizer } from './tokenizer.js'

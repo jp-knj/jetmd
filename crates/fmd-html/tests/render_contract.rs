@@ -2,7 +2,8 @@
 // These tests define the expected API and MUST FAIL until implementation
 
 use fmd_core::{Node, NodeType};
-use fmd_html::{render_html, to_html, HtmlOptions, SanitizeOptions};
+use fmd_html::{render_html, sanitize::SanitizeOptions, to_html, HtmlOptions};
+use std::collections::HashMap;
 
 #[test]
 #[ignore = "Implementation not complete - will fail"]
@@ -11,7 +12,7 @@ fn test_render_basic_html() {
         node_type: NodeType::Root,
         children: vec![Node {
             node_type: NodeType::Heading,
-            data: serde_json::json!({ "depth": 1 }),
+            data: HashMap::new(),
             children: vec![Node {
                 node_type: NodeType::Text,
                 value: Some("Hello World".to_string()),
@@ -98,9 +99,7 @@ fn test_render_table() {
         node_type: NodeType::Root,
         children: vec![Node {
             node_type: NodeType::Table,
-            data: serde_json::json!({
-                "align": ["left", "center", "right"]
-            }),
+            data: HashMap::new(),
             children: vec![
                 // Table rows would be here
             ],
@@ -139,8 +138,8 @@ fn test_render_with_custom_sanitize_options() {
     let options = HtmlOptions {
         sanitize: true,
         sanitize_options: SanitizeOptions {
-            allow_javascript_urls: false,
-            ..Default::default()
+            enabled: true,
+            allow_dangerous_html: false,
         },
         ..Default::default()
     };

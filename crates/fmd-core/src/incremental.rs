@@ -1,5 +1,5 @@
 // Incremental parsing cache
-use crate::{Node, NodeType};
+use crate::Node;
 use std::collections::HashMap;
 
 /// Cache for incremental parsing
@@ -23,12 +23,12 @@ impl IncrementalCache {
             misses: 0,
         }
     }
-    
+
     /// Get the cache size
     pub fn size(&self) -> usize {
         self.node_cache.len()
     }
-    
+
     /// Clear the cache
     pub fn clear(&mut self) {
         self.node_cache.clear();
@@ -36,7 +36,7 @@ impl IncrementalCache {
         self.hits = 0;
         self.misses = 0;
     }
-    
+
     /// Try to get a cached node
     pub fn get(&mut self, hash: u64) -> Option<&Node> {
         if let Some(node) = self.node_cache.get(&hash) {
@@ -47,12 +47,12 @@ impl IncrementalCache {
             None
         }
     }
-    
+
     /// Store a node in the cache
     pub fn put(&mut self, hash: u64, node: Node) {
         self.node_cache.insert(hash, node);
     }
-    
+
     /// Get cache hit rate
     pub fn hit_rate(&self) -> f64 {
         let total = self.hits + self.misses;
@@ -62,12 +62,12 @@ impl IncrementalCache {
             self.hits as f64 / total as f64
         }
     }
-    
+
     /// Cache nodes by line for line-level reuse
     pub fn cache_line(&mut self, line: usize, nodes: Vec<Node>) {
         self.line_cache.insert(line, nodes);
     }
-    
+
     /// Get cached nodes for a line
     pub fn get_line(&self, line: usize) -> Option<&Vec<Node>> {
         self.line_cache.get(&line)
@@ -96,12 +96,12 @@ pub struct DiffResult {
 pub fn calculate_diff(old: &str, new: &str) -> DiffResult {
     let old_lines: Vec<&str> = old.lines().collect();
     let new_lines: Vec<&str> = new.lines().collect();
-    
+
     let mut unchanged = Vec::new();
     let mut changed = Vec::new();
     let mut i = 0;
     let mut j = 0;
-    
+
     // Simple line matching algorithm
     while i < old_lines.len() && j < new_lines.len() {
         if old_lines[i] == new_lines[j] {
@@ -116,13 +116,14 @@ pub fn calculate_diff(old: &str, new: &str) -> DiffResult {
             // Lines don't match, find next match
             let start = j;
             let mut found = false;
-            
+
             // Look ahead for matching lines
             for look_ahead in 1..5 {
                 if j + look_ahead < new_lines.len() {
                     for old_ahead in 0..5 {
-                        if i + old_ahead < old_lines.len() 
-                            && old_lines[i + old_ahead] == new_lines[j + look_ahead] {
+                        if i + old_ahead < old_lines.len()
+                            && old_lines[i + old_ahead] == new_lines[j + look_ahead]
+                        {
                             changed.push((start, j + look_ahead));
                             i += old_ahead;
                             j += look_ahead;
@@ -135,7 +136,7 @@ pub fn calculate_diff(old: &str, new: &str) -> DiffResult {
                     break;
                 }
             }
-            
+
             if !found {
                 i += 1;
                 j += 1;
@@ -143,12 +144,12 @@ pub fn calculate_diff(old: &str, new: &str) -> DiffResult {
             }
         }
     }
-    
+
     // Handle remaining lines
     if j < new_lines.len() {
         changed.push((j, new_lines.len()));
     }
-    
+
     let total_lines = new_lines.len();
     let unchanged_lines: usize = unchanged.iter().map(|(s, e)| e - s).sum();
     let reuse_rate = if total_lines > 0 {
@@ -156,7 +157,7 @@ pub fn calculate_diff(old: &str, new: &str) -> DiffResult {
     } else {
         0.0
     };
-    
+
     DiffResult {
         unchanged,
         changed,

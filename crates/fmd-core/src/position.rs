@@ -20,7 +20,7 @@ impl PositionTracker {
             line_starts: vec![0],
         }
     }
-    
+
     /// Advance position by a character
     pub fn advance(&mut self, c: char) {
         self.offset += c.len_utf8();
@@ -35,14 +35,14 @@ impl PositionTracker {
             self.column += 1;
         }
     }
-    
+
     /// Advance by a string slice
     pub fn advance_str(&mut self, s: &str) {
         for c in s.chars() {
             self.advance(c);
         }
     }
-    
+
     /// Get current point
     pub fn current_point(&self) -> Point {
         Point {
@@ -51,7 +51,7 @@ impl PositionTracker {
             offset: self.offset,
         }
     }
-    
+
     /// Create a position from start to current
     pub fn make_position(&self, start: Point) -> Position {
         Position {
@@ -60,7 +60,7 @@ impl PositionTracker {
             source: None,
         }
     }
-    
+
     /// Get position from byte offsets
     pub fn position_from_offsets(&self, start_offset: usize, end_offset: usize) -> Position {
         let start = self.point_from_offset(start_offset);
@@ -71,7 +71,7 @@ impl PositionTracker {
             source: None,
         }
     }
-    
+
     /// Convert byte offset to Point
     pub fn point_from_offset(&self, offset: usize) -> Point {
         // Binary search for line
@@ -79,18 +79,18 @@ impl PositionTracker {
             Ok(idx) => idx,
             Err(idx) => idx.saturating_sub(1),
         };
-        
+
         let line = line_idx + 1;
         let line_start = self.line_starts[line_idx];
         let column = offset - line_start + 1;
-        
+
         Point {
             line,
             column,
             offset,
         }
     }
-    
+
     /// Reset tracker
     pub fn reset(&mut self) {
         self.line = 1;
@@ -116,53 +116,53 @@ pub fn positions_overlap(a: &Position, b: &Position) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_position_tracker() {
         let mut tracker = PositionTracker::new();
-        
+
         assert_eq!(tracker.line, 1);
         assert_eq!(tracker.column, 1);
         assert_eq!(tracker.offset, 0);
-        
+
         tracker.advance('H');
         assert_eq!(tracker.column, 2);
         assert_eq!(tracker.offset, 1);
-        
+
         tracker.advance('\n');
         assert_eq!(tracker.line, 2);
         assert_eq!(tracker.column, 1);
         assert_eq!(tracker.offset, 2);
-        
+
         tracker.advance_str("Hello");
         assert_eq!(tracker.column, 6);
         assert_eq!(tracker.offset, 7);
     }
-    
+
     #[test]
     fn test_tab_handling() {
         let mut tracker = PositionTracker::new();
         tracker.advance('\t');
         assert_eq!(tracker.column, 5); // Next multiple of 4 + 1
-        
+
         tracker.advance('x');
         tracker.advance('\t');
         assert_eq!(tracker.column, 9); // Next multiple of 4 + 1
     }
-    
+
     #[test]
     fn test_offset_to_point() {
         let mut tracker = PositionTracker::new();
         tracker.advance_str("Line 1\nLine 2\nLine 3");
-        
+
         let point = tracker.point_from_offset(0);
         assert_eq!(point.line, 1);
         assert_eq!(point.column, 1);
-        
+
         let point = tracker.point_from_offset(7); // Start of line 2
         assert_eq!(point.line, 2);
         assert_eq!(point.column, 1);
-        
+
         let point = tracker.point_from_offset(10); // Middle of line 2
         assert_eq!(point.line, 2);
         assert_eq!(point.column, 4);

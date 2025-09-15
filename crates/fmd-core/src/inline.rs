@@ -1,6 +1,6 @@
 // Inline parser for faster-md
 
-use crate::ast::{Node, NodeType, Position, Point};
+use crate::ast::{Node, NodeType, Point, Position};
 use std::collections::HashMap;
 
 pub struct InlineParser {
@@ -29,19 +29,19 @@ impl InlineParser {
             link_references: HashMap::new(),
         }
     }
-    
+
     pub fn parse(&mut self) -> Vec<Node> {
         self.parse_inline_content()
     }
-    
+
     pub fn parse_inline_content(&mut self) -> Vec<Node> {
         let mut nodes = Vec::new();
         let mut text_buffer = String::new();
-        
+
         while !self.is_at_end() {
             let start_pos = self.current_position();
             let c = self.current_char();
-            
+
             match c {
                 '\\' => {
                     // Backslash escape
@@ -103,7 +103,7 @@ impl InlineParser {
                     // Autolink or HTML
                     let saved_pos = self.save_position();
                     self.advance();
-                    
+
                     if let Some(node) = self.try_parse_autolink(start_pos) {
                         if !text_buffer.is_empty() {
                             nodes.push(self.create_text_node(text_buffer.clone()));
@@ -142,26 +142,26 @@ impl InlineParser {
                 }
             }
         }
-        
+
         // Flush remaining text
         if !text_buffer.is_empty() {
             nodes.push(self.create_text_node(text_buffer));
         }
-        
+
         nodes
     }
-    
+
     fn parse_code_span(&mut self, start: Option<Position>) -> Option<Node> {
         let mut backtick_count = 0;
         while self.current_char() == '`' {
             backtick_count += 1;
             self.advance();
         }
-        
+
         // Find closing backticks
         let mut code = String::new();
         let mut found_closing = false;
-        
+
         while !self.is_at_end() {
             if self.current_char() == '`' {
                 let mut count = 0;
@@ -170,7 +170,7 @@ impl InlineParser {
                     count += 1;
                     self.advance();
                 }
-                
+
                 if count == backtick_count {
                     found_closing = true;
                     break;
@@ -183,18 +183,18 @@ impl InlineParser {
                 code.push(self.advance());
             }
         }
-        
+
         if !found_closing {
             return None;
         }
-        
+
         // Normalize spaces in code
         let normalized = if code.starts_with(' ') && code.ends_with(' ') && code.len() > 2 {
-            code[1..code.len()-1].to_string()
+            code[1..code.len() - 1].to_string()
         } else {
             code
         };
-        
+
         Some(Node {
             node_type: NodeType::InlineCode,
             children: vec![],
@@ -203,21 +203,21 @@ impl InlineParser {
             ..Default::default()
         })
     }
-    
+
     fn parse_emphasis(&mut self, start: Option<Position>) -> Option<Node> {
         let marker = self.current_char();
         let mut marker_count = 0;
-        
+
         while self.current_char() == marker {
             marker_count += 1;
             self.advance();
         }
-        
+
         // Try to find closing markers
         let content_start = self.position;
         let mut found_closing = false;
         let mut content_end = self.position;
-        
+
         while !self.is_at_end() {
             if self.current_char() == marker {
                 let saved = self.save_position();
@@ -226,7 +226,7 @@ impl InlineParser {
                     count += 1;
                     self.advance();
                 }
-                
+
                 if count >= marker_count {
                     content_end = saved.0;
                     found_closing = true;
@@ -239,22 +239,22 @@ impl InlineParser {
                 self.advance();
             }
         }
-        
+
         if !found_closing {
             return None;
         }
-        
+
         // Parse inner content
         let inner_content = self.input[content_start..content_end].to_string();
         let mut inner_parser = InlineParser::new(inner_content, self.track_position);
         let children = inner_parser.parse();
-        
+
         let node_type = if marker_count >= 2 {
             NodeType::Strong
         } else {
             NodeType::Emphasis
         };
-        
+
         Some(Node {
             node_type,
             children,
@@ -263,15 +263,15 @@ impl InlineParser {
             ..Default::default()
         })
     }
-    
+
     fn parse_link(&mut self, start: Option<Position>) -> Option<Node> {
         self.advance(); // Skip '['
-        
+
         // Parse link text
         let text_start = self.position;
         let mut bracket_depth = 1;
         let mut text_end = self.position;
-        
+
         while !self.is_at_end() && bracket_depth > 0 {
             match self.current_char() {
                 '[' => bracket_depth += 1,
@@ -292,26 +292,26 @@ impl InlineParser {
             }
             self.advance();
         }
-        
+
         if bracket_depth != 0 {
             return None;
         }
-        
+
         let link_text = self.input[text_start..text_end].to_string();
-        
+
         // Check what follows the closing bracket
         if self.current_char() == '(' {
             // Inline link
             self.advance();
             self.skip_whitespace();
-            
+
             // Parse URL
             let url_start = self.position;
             let mut paren_depth = 1;
             let mut url_end = self.position;
             let mut title_start = None;
             let mut title_end = None;
-            
+
             while !self.is_at_end() && paren_depth > 0 {
                 match self.current_char() {
                     '(' => paren_depth += 1,
@@ -324,21 +324,21 @@ impl InlineParser {
                     ' ' | '\t' | '\n' if title_start.is_none() => {
                         url_end = self.position;
                         self.skip_whitespace();
-                        
+
                         // Check for title
                         let quote = self.current_char();
                         if quote == '"' || quote == '\'' || quote == '(' {
                             let closing = if quote == '(' { ')' } else { quote };
                             self.advance();
                             title_start = Some(self.position);
-                            
+
                             while !self.is_at_end() && self.current_char() != closing {
                                 if self.current_char() == '\\' {
                                     self.advance();
                                 }
                                 self.advance();
                             }
-                            
+
                             if self.current_char() == closing {
                                 title_end = Some(self.position);
                                 self.advance();
@@ -354,27 +354,27 @@ impl InlineParser {
                     }
                     _ => {}
                 }
-                
+
                 if title_start.is_none() {
                     self.advance();
                 }
             }
-            
+
             if paren_depth != 0 {
                 return None;
             }
-            
+
             let url = self.input[url_start..url_end].to_string();
             let title = if let (Some(start), Some(end)) = (title_start, title_end) {
                 Some(self.input[start..end].to_string())
             } else {
                 None
             };
-            
+
             // Parse link text as inline content
             let mut text_parser = InlineParser::new(link_text, self.track_position);
             let children = text_parser.parse();
-            
+
             Some(Node {
                 node_type: NodeType::Link,
                 children,
@@ -386,32 +386,32 @@ impl InlineParser {
         } else if self.current_char() == '[' {
             // Reference link
             self.advance();
-            
+
             let ref_start = self.position;
             let mut ref_end = self.position;
-            
+
             while !self.is_at_end() && self.current_char() != ']' {
                 ref_end = self.position;
                 self.advance();
             }
-            
+
             if self.current_char() != ']' {
                 return None;
             }
-            
+
             let reference = if ref_start == ref_end {
                 // Collapsed reference
                 link_text.clone()
             } else {
                 self.input[ref_start..ref_end].to_string()
             };
-            
+
             self.advance(); // Skip closing ']'
-            
+
             // Parse link text as inline content
             let mut text_parser = InlineParser::new(link_text, self.track_position);
             let children = text_parser.parse();
-            
+
             Some(Node {
                 node_type: NodeType::LinkReference,
                 children,
@@ -423,14 +423,14 @@ impl InlineParser {
             None
         }
     }
-    
+
     fn parse_image(&mut self, start: Option<Position>) -> Option<Node> {
         self.advance(); // Skip '!'
-        
+
         if self.current_char() != '[' {
             return None;
         }
-        
+
         // Parse similarly to link but create Image node
         let saved = self.save_position();
         if let Some(mut node) = self.parse_link(start) {
@@ -455,28 +455,28 @@ impl InlineParser {
                     }
                     Some(node)
                 }
-                _ => None
+                _ => None,
             }
         } else {
             self.restore_position(saved);
             None
         }
     }
-    
+
     fn try_parse_autolink(&mut self, start: Option<Position>) -> Option<Node> {
         // Already consumed '<'
         let content_start = self.position;
-        
+
         // Check for URL autolink
         if self.check_url_scheme() {
             while !self.is_at_end() && self.current_char() != '>' && !self.is_whitespace() {
                 self.advance();
             }
-            
+
             if self.current_char() == '>' {
                 let url = self.input[content_start..self.position].to_string();
                 self.advance(); // Skip '>'
-                
+
                 return Some(Node {
                     node_type: NodeType::Link,
                     children: vec![self.create_text_node(url.clone())],
@@ -487,20 +487,20 @@ impl InlineParser {
                 });
             }
         }
-        
+
         // Check for email autolink
         let saved = self.save_position();
         self.position = content_start;
-        
+
         if self.check_email() {
             while !self.is_at_end() && self.current_char() != '>' && !self.is_whitespace() {
                 self.advance();
             }
-            
+
             if self.current_char() == '>' {
                 let email = self.input[content_start..self.position].to_string();
                 self.advance(); // Skip '>'
-                
+
                 return Some(Node {
                     node_type: NodeType::Link,
                     children: vec![self.create_text_node(email.clone())],
@@ -511,11 +511,11 @@ impl InlineParser {
                 });
             }
         }
-        
+
         self.restore_position(saved);
         None
     }
-    
+
     fn check_url_scheme(&self) -> bool {
         let schemes = ["http://", "https://", "ftp://"];
         for scheme in schemes {
@@ -525,20 +525,20 @@ impl InlineParser {
         }
         false
     }
-    
+
     fn check_email(&self) -> bool {
         // Simple email validation
         let remaining = &self.input[self.position..];
         let at_pos = remaining.find('@');
         let gt_pos = remaining.find('>');
-        
+
         if let (Some(at), Some(gt)) = (at_pos, gt_pos) {
-            at > 0 && at < gt && remaining[at+1..gt].contains('.')
+            at > 0 && at < gt && remaining[at + 1..gt].contains('.')
         } else {
             false
         }
     }
-    
+
     fn extract_text_from_nodes(&self, nodes: &[Node]) -> String {
         let mut text = String::new();
         for node in nodes {
@@ -555,7 +555,7 @@ impl InlineParser {
         }
         text
     }
-    
+
     fn create_text_node(&self, value: String) -> Node {
         Node {
             node_type: NodeType::Text,
@@ -565,12 +565,12 @@ impl InlineParser {
             ..Default::default()
         }
     }
-    
+
     // Helper methods
     fn is_at_end(&self) -> bool {
         self.position >= self.input.len()
     }
-    
+
     fn current_char(&self) -> char {
         if self.is_at_end() {
             '\0'
@@ -578,7 +578,7 @@ impl InlineParser {
             self.input.chars().nth(self.position).unwrap_or('\0')
         }
     }
-    
+
     fn peek(&self) -> Option<char> {
         if self.position + 1 < self.input.len() {
             self.input.chars().nth(self.position + 1)
@@ -586,7 +586,7 @@ impl InlineParser {
             None
         }
     }
-    
+
     fn advance(&mut self) -> char {
         let c = self.current_char();
         if !self.is_at_end() {
@@ -600,27 +600,27 @@ impl InlineParser {
         }
         c
     }
-    
+
     fn skip_whitespace(&mut self) {
         while self.is_whitespace() {
             self.advance();
         }
     }
-    
+
     fn is_whitespace(&self) -> bool {
         matches!(self.current_char(), ' ' | '\t' | '\n' | '\r')
     }
-    
+
     fn save_position(&self) -> (usize, usize, usize) {
         (self.position, self.line, self.column)
     }
-    
+
     fn restore_position(&mut self, saved: (usize, usize, usize)) {
         self.position = saved.0;
         self.line = saved.1;
         self.column = saved.2;
     }
-    
+
     fn current_position(&self) -> Option<Position> {
         if self.track_position {
             Some(Position {
@@ -640,7 +640,7 @@ impl InlineParser {
             None
         }
     }
-    
+
     fn make_position(&self, start: Option<Position>) -> Option<Position> {
         if let Some(s) = start {
             let end = self.current_position()?;
@@ -658,32 +658,33 @@ impl InlineParser {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_parse_text() {
         let mut parser = InlineParser::new("Hello world".to_string(), false);
         let nodes = parser.parse();
-        
+
         assert_eq!(nodes.len(), 1);
         assert_eq!(nodes[0].node_type, NodeType::Text);
         assert_eq!(nodes[0].value, Some("Hello world".to_string()));
     }
-    
+
     #[test]
     fn test_parse_emphasis() {
         let mut parser = InlineParser::new("*emphasis* and **strong**".to_string(), false);
         let nodes = parser.parse();
-        
+
         assert_eq!(nodes.len(), 3);
         assert_eq!(nodes[0].node_type, NodeType::Emphasis);
         assert_eq!(nodes[2].node_type, NodeType::Strong);
     }
-    
+
     #[test]
     fn test_parse_code_span() {
-        let mut parser = InlineParser::new("`code` and ``code with ` backtick``".to_string(), false);
+        let mut parser =
+            InlineParser::new("`code` and ``code with ` backtick``".to_string(), false);
         let nodes = parser.parse();
-        
+
         assert_eq!(nodes.len(), 3);
         assert_eq!(nodes[0].node_type, NodeType::InlineCode);
         assert_eq!(nodes[0].value, Some("code".to_string()));

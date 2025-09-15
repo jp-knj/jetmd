@@ -1,19 +1,18 @@
 // Core parser, lexer, and AST for faster-md
 
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 
 // Re-export main types
 pub use ast::*;
-pub use position::*;
 pub use incremental::*;
+pub use position::*;
 
 pub mod ast;
-pub mod position;
-pub mod scanner;
-pub mod inline;
-pub mod rope;
 pub mod incremental;
+pub mod inline;
+pub mod position;
+pub mod rope;
+pub mod scanner;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Document {
@@ -102,14 +101,14 @@ impl IncrementalSession {
 
 // Main parsing functions
 pub fn parse(doc: &Document, options: ProcessorOptions) -> ParseResult {
-    use scanner::{Scanner, BlockToken, BlockTokenType};
+    use scanner::Scanner;
     use std::time::Instant;
-    
+
     let start_time = Instant::now();
-    
+
     let mut errors = Vec::new();
     let mut warnings = Vec::new();
-    
+
     // Validate document size
     if doc.content.len() > 10 * 1024 * 1024 {
         errors.push("Document exceeds maximum size of 10MB".to_string());
@@ -125,31 +124,31 @@ pub fn parse(doc: &Document, options: ProcessorOptions) -> ParseResult {
             parse_time_ns: start_time.elapsed().as_nanos() as u64,
         };
     }
-    
+
     // Scan blocks
     let mut scanner = Scanner::new(&doc.content, options.position);
     let block_tokens = scanner.scan_blocks();
-    
+
     // Build AST from tokens
     let mut root = Node {
         node_type: NodeType::Root,
         children: Vec::new(),
         ..Default::default()
     };
-    
+
     let mut total_nodes = 1; // Count root
-    
+
     for token in block_tokens {
         let node = build_node_from_token(token, &options);
         total_nodes += count_nodes(&node);
         root.children.push(node);
     }
-    
+
     // Add warnings for dangerous HTML if needed
     if options.allow_dangerous_html {
         warnings.push("Dangerous HTML is allowed - ensure input is trusted".to_string());
     }
-    
+
     ParseResult {
         success: errors.is_empty(),
         ast: root,
@@ -164,9 +163,9 @@ pub fn parse(doc: &Document, options: ProcessorOptions) -> ParseResult {
 }
 
 fn build_node_from_token(token: scanner::BlockToken, options: &ProcessorOptions) -> Node {
-    use scanner::BlockTokenType;
     use inline::InlineParser;
-    
+    use scanner::BlockTokenType;
+
     match token.token_type {
         BlockTokenType::Heading(depth) => {
             let mut parser = InlineParser::new(token.content, options.position);
@@ -187,13 +186,11 @@ fn build_node_from_token(token: scanner::BlockToken, options: &ProcessorOptions)
                 ..Default::default()
             }
         }
-        BlockTokenType::ThematicBreak => {
-            Node {
-                node_type: NodeType::ThematicBreak,
-                position: token.position,
-                ..Default::default()
-            }
-        }
+        BlockTokenType::ThematicBreak => Node {
+            node_type: NodeType::ThematicBreak,
+            position: token.position,
+            ..Default::default()
+        },
         BlockTokenType::Blockquote => {
             // Recursively parse blockquote content
             let inner_doc = Document::new(&token.content);
@@ -217,24 +214,20 @@ fn build_node_from_token(token: scanner::BlockToken, options: &ProcessorOptions)
                 ..Default::default()
             }
         }
-        BlockTokenType::CodeFence { lang, meta } => {
-            Node {
-                node_type: NodeType::Code,
-                value: Some(token.content),
-                lang,
-                meta,
-                position: token.position,
-                ..Default::default()
-            }
-        }
-        BlockTokenType::Html => {
-            Node {
-                node_type: NodeType::Html,
-                value: Some(token.content),
-                position: token.position,
-                ..Default::default()
-            }
-        }
+        BlockTokenType::CodeFence { lang, meta } => Node {
+            node_type: NodeType::Code,
+            value: Some(token.content),
+            lang,
+            meta,
+            position: token.position,
+            ..Default::default()
+        },
+        BlockTokenType::Html => Node {
+            node_type: NodeType::Html,
+            value: Some(token.content),
+            position: token.position,
+            ..Default::default()
+        },
     }
 }
 
@@ -249,30 +242,32 @@ pub fn parse_incremental(
     cache: &mut IncrementalCache,
 ) -> ParseResult {
     use incremental::{calculate_diff, content_hash};
-    
+
     // For now, do a full parse but track what could be reused
     let mut reused_nodes = 0;
-    
+
     // Calculate diff to find unchanged sections
     let diff = calculate_diff(&doc.content, &doc.content); // Would compare with previous content
-    
+
     // Try to reuse nodes from cache
     let content_hash = content_hash(&doc.content);
     if let Some(cached_node) = cache.get(content_hash) {
         reused_nodes = count_nodes(cached_node);
     }
-    
+
     // Do full parse for now
     let mut result = parse(doc, options);
-    
+
     // Store in cache for future reuse
     cache.put(content_hash, result.ast.clone());
-    
+
     // Update reuse statistics
     result.reused_nodes = reused_nodes;
-    result.changed_ranges = diff.changed.into_iter()
+    result.changed_ranges = diff
+        .changed
+        .into_iter()
         .map(|(start, end)| Range { start, end })
         .collect();
-    
+
     result
 }

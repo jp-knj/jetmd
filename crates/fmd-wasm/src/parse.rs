@@ -1,7 +1,7 @@
 // WASM parsing module
-use wasm_bindgen::prelude::*;
-use fmd_core::{Document, ProcessorOptions, ParseResult, Node};
+use fmd_core::{Document, Node, ParseResult, ProcessorOptions};
 use serde_wasm_bindgen::{from_value, to_value};
+use wasm_bindgen::prelude::*;
 
 /// Parse Markdown to AST
 #[wasm_bindgen]
@@ -9,13 +9,12 @@ pub fn parseToAst(content: &str, options: JsValue) -> Result<JsValue, JsValue> {
     let opts: ProcessorOptions = if options.is_undefined() || options.is_null() {
         ProcessorOptions::default()
     } else {
-        from_value(options)
-            .map_err(|e| JsValue::from_str(&format!("Invalid options: {}", e)))?
+        from_value(options).map_err(|e| JsValue::from_str(&format!("Invalid options: {}", e)))?
     };
-    
+
     let doc = Document::new(content);
     let result = fmd_core::parse(&doc, opts);
-    
+
     // Return full parse result with AST and metadata
     let js_result = serde_json::json!({
         "ast": result.ast,
@@ -24,7 +23,7 @@ pub fn parseToAst(content: &str, options: JsValue) -> Result<JsValue, JsValue> {
         "parseTime": result.parse_time_ns,
         "nodeCount": count_nodes(&result.ast),
     });
-    
+
     to_value(&js_result).map_err(|e| JsValue::from_str(&format!("Serialization error: {}", e)))
 }
 
@@ -34,16 +33,15 @@ pub fn parseWithPositions(content: &str, options: JsValue) -> Result<JsValue, Js
     let mut opts: ProcessorOptions = if options.is_undefined() || options.is_null() {
         ProcessorOptions::default()
     } else {
-        from_value(options)
-            .map_err(|e| JsValue::from_str(&format!("Invalid options: {}", e)))?
+        from_value(options).map_err(|e| JsValue::from_str(&format!("Invalid options: {}", e)))?
     };
-    
+
     // Ensure positions are tracked
     opts.track_positions = true;
-    
+
     let doc = Document::new(content);
     let result = fmd_core::parse(&doc, opts);
-    
+
     to_value(&result).map_err(|e| JsValue::from_str(&format!("Serialization error: {}", e)))
 }
 
@@ -52,7 +50,7 @@ pub fn parseWithPositions(content: &str, options: JsValue) -> Result<JsValue, Js
 pub fn getParseStats(content: &str) -> Result<JsValue, JsValue> {
     let doc = Document::new(content);
     let result = fmd_core::parse(&doc, ProcessorOptions::default());
-    
+
     let stats = serde_json::json!({
         "nodeCount": count_nodes(&result.ast),
         "parseTime": result.parse_time_ns,
@@ -61,7 +59,7 @@ pub fn getParseStats(content: &str) -> Result<JsValue, JsValue> {
         "documentLength": content.len(),
         "lineCount": content.lines().count(),
     });
-    
+
     to_value(&stats).map_err(|e| JsValue::from_str(&format!("Statistics error: {}", e)))
 }
 

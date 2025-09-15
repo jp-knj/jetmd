@@ -35,49 +35,50 @@ impl Rope {
             .char_indices()
             .filter_map(|(i, c)| if c == '\n' { Some(i) } else { None })
             .collect();
-        
+
         Self {
             total_length: text.len(),
             root: RopeNode::from_str(text, 0),
             line_breaks,
         }
     }
-    
+
     /// Get total length
     pub fn len(&self) -> usize {
         self.total_length
     }
-    
+
     /// Check if empty
     pub fn is_empty(&self) -> bool {
         self.total_length == 0
     }
-    
+
     /// Apply an edit to the rope
     pub fn apply_edit(&mut self, edit: &Edit) {
         let new_text = self.replace_range(edit.range.start, edit.range.end, &edit.text);
         *self = Self::new(&new_text);
     }
-    
+
     /// Replace a range with new text
     fn replace_range(&self, start: usize, end: usize, replacement: &str) -> String {
-        let mut result = String::with_capacity(self.total_length - (end - start) + replacement.len());
+        let mut result =
+            String::with_capacity(self.total_length - (end - start) + replacement.len());
         self.collect_text(&mut result, 0, start);
         result.push_str(replacement);
         self.collect_text(&mut result, end, self.total_length);
         result
     }
-    
+
     /// Collect text in range into string
     fn collect_text(&self, output: &mut String, start: usize, end: usize) {
         self.root.collect_range(output, start, end);
     }
-    
+
     /// Get text at position
     pub fn char_at(&self, offset: usize) -> Option<char> {
         self.root.char_at(offset)
     }
-    
+
     /// Get line number from offset
     pub fn line_at_offset(&self, offset: usize) -> usize {
         match self.line_breaks.binary_search(&offset) {
@@ -85,7 +86,7 @@ impl Rope {
             Err(idx) => idx + 1,
         }
     }
-    
+
     /// Get line start offset
     pub fn line_start(&self, line: usize) -> usize {
         if line == 1 {
@@ -96,7 +97,7 @@ impl Rope {
             self.total_length
         }
     }
-    
+
     /// Convert to string
     pub fn to_string(&self) -> String {
         let mut result = String::with_capacity(self.total_length);
@@ -109,7 +110,7 @@ impl RopeNode {
     /// Create from string
     fn from_str(text: &str, start_offset: usize) -> Self {
         const SPLIT_THRESHOLD: usize = 1024;
-        
+
         if text.len() <= SPLIT_THRESHOLD {
             RopeNode::Leaf {
                 text: text.to_string(),
@@ -118,14 +119,11 @@ impl RopeNode {
         } else {
             let mid = text.len() / 2;
             // Find a good split point (preferably at line boundary)
-            let split = text[..mid]
-                .rfind('\n')
-                .map(|i| i + 1)
-                .unwrap_or(mid);
-            
+            let split = text[..mid].rfind('\n').map(|i| i + 1).unwrap_or(mid);
+
             let left = Box::new(RopeNode::from_str(&text[..split], start_offset));
             let right = Box::new(RopeNode::from_str(&text[split..], start_offset + split));
-            
+
             RopeNode::Branch {
                 weight: split,
                 left,
@@ -133,7 +131,7 @@ impl RopeNode {
             }
         }
     }
-    
+
     /// Collect text in range
     fn collect_range(&self, output: &mut String, start: usize, end: usize) {
         match self {
@@ -145,7 +143,11 @@ impl RopeNode {
                     output.push_str(&text[text_start..text_end]);
                 }
             }
-            RopeNode::Branch { left, right, weight } => {
+            RopeNode::Branch {
+                left,
+                right,
+                weight,
+            } => {
                 if start < *weight {
                     left.collect_range(output, start, end.min(*weight));
                 }
@@ -155,7 +157,7 @@ impl RopeNode {
             }
         }
     }
-    
+
     /// Get character at offset
     fn char_at(&self, offset: usize) -> Option<char> {
         match self {
@@ -163,7 +165,11 @@ impl RopeNode {
                 let local_offset = offset.checked_sub(*start_offset)?;
                 text.chars().nth(local_offset)
             }
-            RopeNode::Branch { left, right, weight } => {
+            RopeNode::Branch {
+                left,
+                right,
+                weight,
+            } => {
                 if offset < *weight {
                     left.char_at(offset)
                 } else {
@@ -203,14 +209,14 @@ impl IncrementalTree {
         let rope = Rope::new(text);
         let mut node_positions = BTreeMap::new();
         Self::index_nodes(&tree, &mut node_positions, &[], 0);
-        
+
         Self {
             tree,
             rope,
             node_positions,
         }
     }
-    
+
     /// Index nodes by position
     fn index_nodes(node: &Node, map: &mut BTreeMap<usize, NodeInfo>, path: &[usize], depth: usize) {
         if let Some(pos) = &node.position {
@@ -222,19 +228,19 @@ impl IncrementalTree {
             };
             map.insert(pos.start.offset, info);
         }
-        
+
         for (i, child) in node.children.iter().enumerate() {
             let mut child_path = path.to_vec();
             child_path.push(i);
             Self::index_nodes(child, map, &child_path, depth + 1);
         }
     }
-    
+
     /// Simple hash function for node content
     fn hash_node(node: &Node) -> u64 {
         use std::collections::hash_map::DefaultHasher;
         use std::hash::{Hash, Hasher};
-        
+
         let mut hasher = DefaultHasher::new();
         format!("{:?}", node.node_type).hash(&mut hasher);
         if let Some(value) = &node.value {
@@ -242,26 +248,25 @@ impl IncrementalTree {
         }
         hasher.finish()
     }
-    
+
     /// Apply edit and return affected range
     pub fn apply_edit(&mut self, edit: &Edit) -> Range {
         self.rope.apply_edit(edit);
-        
+
         // Find affected nodes
         let affected_start = edit.range.start;
         let affected_end = edit.range.end;
-        
+
         // Clear cached positions in affected range
-        self.node_positions.retain(|&offset, _| {
-            offset < affected_start || offset >= affected_end
-        });
-        
+        self.node_positions
+            .retain(|&offset, _| offset < affected_start || offset >= affected_end);
+
         Range {
             start: affected_start,
             end: affected_start + edit.text.len(),
         }
     }
-    
+
     /// Get nodes that can be reused
     pub fn get_reusable_nodes(&self, range: &Range) -> Vec<NodeInfo> {
         self.node_positions
@@ -270,15 +275,15 @@ impl IncrementalTree {
             .cloned()
             .collect()
     }
-    
+
     /// Calculate reuse percentage
     pub fn calculate_reuse_stats(&self, new_tree: &Node) -> (usize, usize) {
         let mut new_positions = BTreeMap::new();
         Self::index_nodes(new_tree, &mut new_positions, &[], 0);
-        
+
         let mut reused = 0;
         let total = new_positions.len();
-        
+
         for (_, new_info) in new_positions.iter() {
             if let Some(old_info) = self.node_positions.get(&new_info.start) {
                 if old_info.hash == new_info.hash {
@@ -286,7 +291,7 @@ impl IncrementalTree {
                 }
             }
         }
-        
+
         (reused, total)
     }
 }
@@ -294,7 +299,7 @@ impl IncrementalTree {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_rope_basic() {
         let rope = Rope::new("Hello\nWorld");
@@ -303,7 +308,7 @@ mod tests {
         assert_eq!(rope.char_at(6), Some('W'));
         assert_eq!(rope.to_string(), "Hello\nWorld");
     }
-    
+
     #[test]
     fn test_rope_edit() {
         let mut rope = Rope::new("Hello World");
@@ -313,14 +318,14 @@ mod tests {
         });
         assert_eq!(rope.to_string(), "Hello Rust");
     }
-    
+
     #[test]
     fn test_line_lookup() {
         let rope = Rope::new("Line 1\nLine 2\nLine 3");
         assert_eq!(rope.line_at_offset(0), 1);
         assert_eq!(rope.line_at_offset(7), 2);
         assert_eq!(rope.line_at_offset(14), 3);
-        
+
         assert_eq!(rope.line_start(1), 0);
         assert_eq!(rope.line_start(2), 7);
         assert_eq!(rope.line_start(3), 14);

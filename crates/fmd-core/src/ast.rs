@@ -8,44 +8,44 @@ use std::collections::HashMap;
 pub struct Node {
     #[serde(rename = "type")]
     pub node_type: NodeType,
-    
+
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub children: Vec<Node>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub position: Option<Position>,
-    
+
     #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub data: HashMap<String, Value>,
-    
+
     // Specific fields for certain node types
     #[serde(skip_serializing_if = "Option::is_none")]
     pub depth: Option<u8>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ordered: Option<bool>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub checked: Option<bool>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lang: Option<String>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub meta: Option<String>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alt: Option<String>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub identifier: Option<String>,
 }
@@ -55,7 +55,7 @@ pub struct Node {
 pub enum NodeType {
     // Document
     Root,
-    
+
     // Block
     Paragraph,
     Heading,
@@ -67,7 +67,7 @@ pub enum NodeType {
     Html,
     Definition,
     FrontMatter,
-    
+
     // Inline
     Text,
     Emphasis,
@@ -78,7 +78,7 @@ pub enum NodeType {
     Image,
     LinkReference,
     ImageReference,
-    
+
     // GFM Extensions
     Table,
     TableRow,
@@ -86,14 +86,14 @@ pub enum NodeType {
     Delete,
     FootnoteDefinition,
     FootnoteReference,
-    
+
     // MDX
     MdxjsEsm,
     MdxJsxFlowElement,
     MdxJsxTextElement,
     MdxFlowExpression,
     MdxTextExpression,
-    
+
     // Directives
     ContainerDirective,
     LeafDirective,

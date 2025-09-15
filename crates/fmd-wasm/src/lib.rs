@@ -36,6 +36,6 @@ pub fn features() -> JsValue {
         "positions": true,
         "mdx": false, // Will be true when MDX is implemented
     });
-    
+
     JsValue::from_str(&features.to_string())
 }

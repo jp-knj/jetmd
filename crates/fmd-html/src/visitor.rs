@@ -25,7 +25,7 @@ impl HtmlVisitor {
             list_stack: Vec::new(),
         }
     }
-    
+
     /// Visit a node and generate HTML
     pub fn visit(&mut self, node: &Node) {
         match node.node_type {
@@ -70,43 +70,45 @@ impl HtmlVisitor {
             NodeType::List => {
                 let ordered = node.ordered.unwrap_or(false);
                 let tight = self.is_tight_list(node);
-                
+
                 self.list_stack.push(ListContext {
                     ordered,
                     start: 1,
                     tight,
                 });
-                
+
                 if ordered {
                     self.output.push_str("<ol>\n");
                 } else {
                     self.output.push_str("<ul>\n");
                 }
-                
+
                 for child in &node.children {
                     self.visit(child);
                 }
-                
+
                 if ordered {
                     self.output.push_str("</ol>\n");
                 } else {
                     self.output.push_str("</ul>\n");
                 }
-                
+
                 self.list_stack.pop();
             }
             NodeType::ListItem => {
                 self.output.push_str("<li>");
-                
+
                 // Check if item has checkbox
                 if let Some(checked) = node.checked {
                     if checked {
-                        self.output.push_str("<input type=\"checkbox\" checked disabled /> ");
+                        self.output
+                            .push_str("<input type=\"checkbox\" checked disabled /> ");
                     } else {
-                        self.output.push_str("<input type=\"checkbox\" disabled /> ");
+                        self.output
+                            .push_str("<input type=\"checkbox\" disabled /> ");
                     }
                 }
-                
+
                 for child in &node.children {
                     self.visit(child);
                 }
@@ -115,15 +117,20 @@ impl HtmlVisitor {
             NodeType::Code => {
                 self.output.push_str("<pre>");
                 if let Some(lang) = &node.lang {
-                    write!(self.output, "<code class=\"language-{}\">", escape_html(lang)).unwrap();
+                    write!(
+                        self.output,
+                        "<code class=\"language-{}\">",
+                        escape_html(lang)
+                    )
+                    .unwrap();
                 } else {
                     self.output.push_str("<code>");
                 }
-                
+
                 if let Some(value) = &node.value {
                     self.output.push_str(&escape_html(value));
                 }
-                
+
                 self.output.push_str("</code></pre>\n");
             }
             NodeType::Html => {
@@ -204,17 +211,17 @@ impl HtmlVisitor {
             // GFM Extensions
             NodeType::Table => {
                 self.output.push_str("<table>\n");
-                
+
                 // Separate thead and tbody
                 let mut in_header = true;
                 let mut thead_content = String::new();
                 let mut tbody_content = String::new();
-                
+
                 for child in &node.children {
                     if child.node_type == NodeType::TableRow {
                         let mut row_visitor = HtmlVisitor::new();
                         row_visitor.visit(child);
-                        
+
                         if in_header {
                             thead_content.push_str(&row_visitor.output);
                             in_header = false;
@@ -223,19 +230,19 @@ impl HtmlVisitor {
                         }
                     }
                 }
-                
+
                 if !thead_content.is_empty() {
                     self.output.push_str("<thead>\n");
                     self.output.push_str(&thead_content);
                     self.output.push_str("</thead>\n");
                 }
-                
+
                 if !tbody_content.is_empty() {
                     self.output.push_str("<tbody>\n");
                     self.output.push_str(&tbody_content);
                     self.output.push_str("</tbody>\n");
                 }
-                
+
                 self.output.push_str("</table>\n");
             }
             NodeType::TableRow => {
@@ -264,7 +271,12 @@ impl HtmlVisitor {
             NodeType::FootnoteDefinition => {
                 // Footnotes need special handling
                 if let Some(id) = &node.identifier {
-                    write!(self.output, "<div class=\"footnote\" id=\"fn-{}\">\n", escape_attr(id)).unwrap();
+                    write!(
+                        self.output,
+                        "<div class=\"footnote\" id=\"fn-{}\">\n",
+                        escape_attr(id)
+                    )
+                    .unwrap();
                     for child in &node.children {
                         self.visit(child);
                     }
@@ -273,12 +285,21 @@ impl HtmlVisitor {
             }
             NodeType::FootnoteReference => {
                 if let Some(id) = &node.identifier {
-                    write!(self.output, "<sup><a href=\"#fn-{}\">{}</a></sup>", escape_attr(id), escape_html(id)).unwrap();
+                    write!(
+                        self.output,
+                        "<sup><a href=\"#fn-{}\">{}</a></sup>",
+                        escape_attr(id),
+                        escape_html(id)
+                    )
+                    .unwrap();
                 }
             }
             // MDX nodes - render as comments for now
-            NodeType::MdxjsEsm | NodeType::MdxJsxFlowElement | NodeType::MdxJsxTextElement |
-            NodeType::MdxFlowExpression | NodeType::MdxTextExpression => {
+            NodeType::MdxjsEsm
+            | NodeType::MdxJsxFlowElement
+            | NodeType::MdxJsxTextElement
+            | NodeType::MdxFlowExpression
+            | NodeType::MdxTextExpression => {
                 write!(self.output, "<!-- MDX: {:?} -->", node.node_type).unwrap();
             }
             // Directives
@@ -297,13 +318,13 @@ impl HtmlVisitor {
             }
         }
     }
-    
+
     /// Check if a list is tight (no blank lines between items)
     fn is_tight_list(&self, list: &Node) -> bool {
         // Simplified check - would need to analyze spacing
         true
     }
-    
+
     /// Get generated HTML
     pub fn finish(self) -> String {
         self.output
@@ -334,14 +355,14 @@ pub fn escape_attr(text: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_escape_html() {
         assert_eq!(escape_html("Hello <world>"), "Hello &lt;world&gt;");
         assert_eq!(escape_html("A & B"), "A &amp; B");
         assert_eq!(escape_html("\"quoted\""), "&quot;quoted&quot;");
     }
-    
+
     #[test]
     fn test_simple_paragraph() {
         let mut visitor = HtmlVisitor::new();
@@ -354,7 +375,7 @@ mod tests {
             }],
             ..Default::default()
         };
-        
+
         visitor.visit(&node);
         assert_eq!(visitor.finish(), "<p>Hello world</p>\n");
     }

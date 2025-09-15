@@ -40,19 +40,19 @@ impl MdxParser {
     pub fn new(options: MdxOptions) -> Self {
         Self { options }
     }
-    
+
     pub fn parse_jsx_element(&self, input: &str) -> Option<Node> {
         // TODO: Implement JSX element parsing
         // This will parse <Component prop="value">content</Component>
         None
     }
-    
+
     pub fn parse_jsx_expression(&self, input: &str) -> Option<Node> {
         // TODO: Implement JSX expression parsing
         // This will parse {expression}
         None
     }
-    
+
     pub fn parse_esm_import(&self, input: &str) -> Option<Node> {
         // TODO: Implement ESM import/export parsing
         // This will parse import/export statements
@@ -79,12 +79,15 @@ pub struct TransformResult {
 pub fn compile_to_js(ast: Node, options: MdxOptions) -> String {
     // TODO: Compile MDX AST to JavaScript/JSX
     let mut output = String::new();
-    
+
     // Add runtime imports based on jsx_runtime
     match options.jsx_runtime {
         JsxRuntime::Automatic => {
             if let Some(source) = &options.jsx_import_source {
-                output.push_str(&format!("import {{jsx as _jsx}} from '{}/jsx-runtime';\n", source));
+                output.push_str(&format!(
+                    "import {{jsx as _jsx}} from '{}/jsx-runtime';\n",
+                    source
+                ));
             }
         }
         JsxRuntime::Classic => {
@@ -95,19 +98,19 @@ pub fn compile_to_js(ast: Node, options: MdxOptions) -> String {
             }
         }
     }
-    
+
     // TODO: Generate component function
     output.push_str("\nexport default function MDXContent(props) {\n");
     output.push_str("  return _jsx('div', {children: 'MDX compiler not implemented'});\n");
     output.push_str("}\n");
-    
+
     output
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_default_options() {
         let opts = MdxOptions::default();

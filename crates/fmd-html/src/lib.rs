@@ -1,7 +1,7 @@
 // HTML renderer for faster-md AST
 
-pub mod visitor;
 pub mod sanitize;
+pub mod visitor;
 
 use fmd_core::Node;
 use serde::{Deserialize, Serialize};
@@ -25,7 +25,7 @@ pub fn to_html(ast: &Node, options: HtmlOptions) -> String {
     let mut visitor = HtmlVisitor::new();
     visitor.visit(ast);
     let html = visitor.finish();
-    
+
     // Sanitize if needed
     if options.sanitize && !options.allow_dangerous_html {
         sanitize::sanitize_html(&html, &options.sanitize_options)
@@ -41,38 +41,37 @@ pub fn render_html_default(ast: &Node) -> String {
 
 /// Render HTML without sanitization (dangerous!)
 pub fn render_html_unsafe(ast: &Node) -> String {
-    render_html(ast, HtmlOptions {
-        sanitize: false,
-        allow_dangerous_html: true,
-        ..Default::default()
-    })
+    render_html(
+        ast,
+        HtmlOptions {
+            sanitize: false,
+            allow_dangerous_html: true,
+            ..Default::default()
+        },
+    )
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use fmd_core::NodeType;
-    
+
     #[test]
     fn test_render_paragraph() {
         let ast = Node {
             node_type: NodeType::Root,
-            children: vec![
-                Node {
-                    node_type: NodeType::Paragraph,
-                    children: vec![
-                        Node {
-                            node_type: NodeType::Text,
-                            value: Some("Hello world".to_string()),
-                            ..Default::default()
-                        }
-                    ],
+            children: vec![Node {
+                node_type: NodeType::Paragraph,
+                children: vec![Node {
+                    node_type: NodeType::Text,
+                    value: Some("Hello world".to_string()),
                     ..Default::default()
-                }
-            ],
+                }],
+                ..Default::default()
+            }],
             ..Default::default()
         };
-        
+
         let html = render_html_default(&ast);
         assert!(html.contains("<p>Hello world</p>"));
     }

@@ -18,7 +18,7 @@ fn test_incremental_basic_edit() {
     assert_eq!(result.ast.children.len(), 2);
 
     // Edit the heading
-    let edit = Edit {
+    let _edit = Edit {
         range: Range {
             start: 2, // Position after '#'
             end: 7,   // End of "Hello"

@@ -123,5 +123,5 @@ fn test_parse_error_handling() {
 
     // Should still succeed but with warnings
     assert!(result.success);
-    assert!(result.warnings.len() > 0);
+    assert!(!result.warnings.is_empty());
 }

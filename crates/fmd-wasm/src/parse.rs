@@ -1,11 +1,11 @@
 // WASM parsing module
-use fmd_core::{Document, Node, ParseResult, ProcessorOptions};
+use fmd_core::{Document, Node, ProcessorOptions};
 use serde_wasm_bindgen::{from_value, to_value};
 use wasm_bindgen::prelude::*;
 
 /// Parse Markdown to AST
-#[wasm_bindgen]
-pub fn parseToAst(content: &str, options: JsValue) -> Result<JsValue, JsValue> {
+#[wasm_bindgen(js_name = parseToAst)]
+pub fn parse_to_ast(content: &str, options: JsValue) -> Result<JsValue, JsValue> {
     let opts: ProcessorOptions = if options.is_undefined() || options.is_null() {
         ProcessorOptions::default()
     } else {
@@ -28,8 +28,8 @@ pub fn parseToAst(content: &str, options: JsValue) -> Result<JsValue, JsValue> {
 }
 
 /// Parse with position information
-#[wasm_bindgen]
-pub fn parseWithPositions(content: &str, options: JsValue) -> Result<JsValue, JsValue> {
+#[wasm_bindgen(js_name = parseWithPositions)]
+pub fn parse_with_positions(content: &str, options: JsValue) -> Result<JsValue, JsValue> {
     let mut opts: ProcessorOptions = if options.is_undefined() || options.is_null() {
         ProcessorOptions::default()
     } else {
@@ -46,8 +46,8 @@ pub fn parseWithPositions(content: &str, options: JsValue) -> Result<JsValue, Js
 }
 
 /// Get parsing statistics
-#[wasm_bindgen]
-pub fn getParseStats(content: &str) -> Result<JsValue, JsValue> {
+#[wasm_bindgen(js_name = getParseStats)]
+pub fn get_parse_stats(content: &str) -> Result<JsValue, JsValue> {
     let doc = Document::new(content);
     let result = fmd_core::parse(&doc, ProcessorOptions::default());
 

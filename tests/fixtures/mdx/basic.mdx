@@ -1,0 +1,23 @@
+import Button from './Button'
+export const meta = { title: 'Test MDX' }
+
+# Hello MDX
+
+This is a paragraph with <Button>inline JSX</Button>.
+
+<Button variant="primary">
+  Block-level JSX
+</Button>
+
+The answer is {40 + 2}.
+
+## Lists with JSX
+
+- Regular item
+- <Button>JSX in list</Button>
+- Another item
+
+```jsx
+// Code block
+const Component = () => <div>Hello</div>
+```

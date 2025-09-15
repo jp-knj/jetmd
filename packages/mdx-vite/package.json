@@ -26,10 +26,10 @@
     "faster-md": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "catalog:",
-    "typescript": "catalog:",
-    "vitest": "catalog:",
-    "@biomejs/biome": "catalog:",
+    "@types/node": "^,
+    "typescript": "^,
+    "vitest": "^,
+    "@biomejs/biome": "^,
     "vite": "^5.0.0"
   },
   "peerDependencies": {

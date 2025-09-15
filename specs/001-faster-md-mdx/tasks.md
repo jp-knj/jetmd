@@ -75,18 +75,18 @@ Each phase will have its own branch for parallel development:
 **Branch**: `001-phase-3.1-setup`
 
 - [ ] T001 Create and checkout branch 001-phase-3.1-setup from 001-faster-md-mdx
-- [ ] T002 [P] Set up changesets for coordinated releases and version management
+- [ ] T002 [P] Set up changesets for coordinated releases and version management (@changesets/cli@2.27.1)
 - [ ] T003 Create monorepo structure with crates/ and packages/ directories
 - [ ] T004 Initialize Cargo workspace in crates/ with workspace members
-- [ ] T005 Initialize pnpm workspace with pnpm-workspace.yaml, catalogs, and shared dependencies
+- [ ] T005 Initialize pnpm workspace with pnpm-workspace.yaml and shared dependencies (pnpm@8.14.0, exact versions: @biomejs/biome@1.5.0, @types/node@20.10.0, typescript@5.3.0, vitest@1.0.0, acorn@8.11.0)
 - [ ] T006 [P] Set up Rust toolchain (stable) and wasm-pack
 - [ ] T007 [P] Configure CI/CD with GitHub Actions for Rust and Node
 
 ### Git Hooks & Code Quality
-- [ ] T008 Install and configure husky for git hooks management
-- [ ] T009 Set up pre-commit hook with lint-staged for formatting and linting
-- [ ] T010 Configure commit-msg hook for conventional commits validation
-- [ ] T011 [P] Create .lintstagedrc.json for Rust (cargo fmt) and JS (prettier, eslint)
+- [ ] T008 Install and configure husky for git hooks management (husky@8.0.0)
+- [ ] T009 Set up pre-commit hook with lint-staged for formatting and linting (lint-staged@15.2.0)
+- [ ] T010 Configure commit-msg hook for conventional commits validation (SKIP - not using conventional commits)
+- [ ] T011 [P] Create .lintstagedrc.json for Rust (cargo fmt) and JS (Biome instead of prettier/eslint)
 - [ ] T012 Create PR: Merge 001-phase-3.1-setup → 001-faster-md-mdx
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
@@ -341,6 +341,8 @@ Task: "Set up release notes template"
 - Commit after each task with descriptive message (no AI tool references)
 - Run conformance tests frequently during development
 - Use `cargo watch` and `pnpm dev` for rapid iteration
+- **IMPORTANT**: Use exact versions specified in tasks for reproducible builds
+- **Tooling**: Biome is used for both linting and formatting (replaces Prettier/ESLint)
 
 ## PR Descriptions for Each Phase
 

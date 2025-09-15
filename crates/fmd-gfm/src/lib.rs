@@ -5,6 +5,27 @@ pub mod strikethrough;
 pub mod autolink;
 
 use fmd_core::Node;
+use serde::{Serialize, Deserialize};
+
+/// GFM configuration options
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct GfmOptions {
+    pub tables: bool,
+    pub strikethrough: bool,
+    pub autolinks: bool,
+    pub tasklists: bool,
+}
+
+impl Default for GfmOptions {
+    fn default() -> Self {
+        Self {
+            tables: true,
+            strikethrough: true,
+            autolinks: true,
+            tasklists: true,
+        }
+    }
+}
 
 pub struct GfmExtensions {
     enable_tables: bool,

@@ -11,6 +11,7 @@ use visitor::HtmlVisitor;
 pub struct HtmlOptions {
     pub sanitize: bool,
     pub allow_dangerous_html: bool,
+    pub xhtml: bool,
     #[serde(skip)]
     pub sanitize_options: sanitize::SanitizeOptions,
 }

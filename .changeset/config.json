@@ -3,9 +3,7 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [],
-  "linked": [
-    ["faster-md", "mdx-compiler", "mdx-runtime", "faster-md-vite", "mdx-vite"]
-  ],
+  "linked": [["faster-md", "mdx-compiler", "mdx-runtime", "faster-md-vite", "mdx-vite"]],
   "access": "public",
   "baseBranch": "001-faster-md-mdx",
   "updateInternalDependencies": "patch",

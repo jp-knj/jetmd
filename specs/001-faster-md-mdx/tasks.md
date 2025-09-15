@@ -130,45 +130,45 @@ Each phase will have its own branch for parallel development:
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
 **Branch**: `001-phase-3.3-core`
 
-- [ ] T034 Create and checkout branch 001-phase-3.3-core from 001-faster-md-mdx
+- [x] T034 Create and checkout branch 001-phase-3.3-core from 001-faster-md-mdx
 
 ### Rust Core Parser (fmd-core)
-- [ ] T035 Create AST node types in crates/fmd-core/src/ast.rs
-- [ ] T036 Implement block scanner with SIMD in crates/fmd-core/src/scanner.rs
-- [ ] T037 Implement inline parser in crates/fmd-core/src/inline.rs
-- [ ] T038 Implement parse() function in crates/fmd-core/src/lib.rs
-- [ ] T039 Add position tracking in crates/fmd-core/src/position.rs
-- [ ] T040 [P] Create rope structure for incremental in crates/fmd-core/src/rope.rs
+- [x] T035 Create AST node types in crates/fmd-core/src/ast.rs
+- [x] T036 Implement block scanner with SIMD in crates/fmd-core/src/scanner.rs
+- [x] T037 Implement inline parser in crates/fmd-core/src/inline.rs
+- [x] T038 Implement parse() function in crates/fmd-core/src/lib.rs
+- [x] T039 Add position tracking in crates/fmd-core/src/position.rs
+- [x] T040 [P] Create rope structure for incremental in crates/fmd-core/src/rope.rs
 
 ### HTML Renderer (fmd-html)
-- [ ] T041 [P] Implement HTML visitor in crates/fmd-html/src/visitor.rs
-- [ ] T042 [P] Add sanitization with ammonia in crates/fmd-html/src/sanitize.rs
-- [ ] T043 [P] Implement to_html() in crates/fmd-html/src/lib.rs
+- [x] T041 [P] Implement HTML visitor in crates/fmd-html/src/visitor.rs
+- [x] T042 [P] Add sanitization with ammonia in crates/fmd-html/src/sanitize.rs
+- [x] T043 [P] Implement to_html() in crates/fmd-html/src/lib.rs
 
 ### GFM Extensions (fmd-gfm)
-- [ ] T044 [P] Add table parser in crates/fmd-gfm/src/table.rs
-- [ ] T045 [P] Add strikethrough parser in crates/fmd-gfm/src/strikethrough.rs
-- [ ] T046 [P] Add autolink parser in crates/fmd-gfm/src/autolink.rs
+- [x] T044 [P] Add table parser in crates/fmd-gfm/src/table.rs
+- [x] T045 [P] Add strikethrough parser in crates/fmd-gfm/src/strikethrough.rs
+- [x] T046 [P] Add autolink parser in crates/fmd-gfm/src/autolink.rs
 
 ### WASM Bindings (fmd-wasm)
-- [ ] T047 Set up wasm-bindgen exports in crates/fmd-wasm/src/lib.rs
-- [ ] T048 Implement parseToAst() binding in crates/fmd-wasm/src/parse.rs
-- [ ] T049 Implement renderHtml() binding in crates/fmd-wasm/src/render.rs
-- [ ] T050 Add session management in crates/fmd-wasm/src/session.rs
+- [x] T047 Set up wasm-bindgen exports in crates/fmd-wasm/src/lib.rs
+- [x] T048 Implement parseToAst() binding in crates/fmd-wasm/src/parse.rs
+- [x] T049 Implement renderHtml() binding in crates/fmd-wasm/src/render.rs
+- [x] T050 Add session management in crates/fmd-wasm/src/session.rs
 
 ### Node Wrapper (faster-md)
-- [ ] T051 Create WASM loader in packages/faster-md/src/loader.js
-- [ ] T052 Implement parse() wrapper in packages/faster-md/src/parse.js
-- [ ] T053 Implement renderHtml() wrapper in packages/faster-md/src/render.js
-- [ ] T054 Create processor class in packages/faster-md/src/processor.js
-- [ ] T055 Add stream support in packages/faster-md/src/stream.js
+- [x] T051 Create WASM loader in packages/faster-md/src/loader.js
+- [x] T052 Implement parse() wrapper in packages/faster-md/src/parse.js
+- [x] T053 Implement renderHtml() wrapper in packages/faster-md/src/render.js
+- [x] T054 Create processor class in packages/faster-md/src/processor.js
+- [x] T055 Add stream support in packages/faster-md/src/stream.js
 
 ### MDX Compiler (mdx-compiler)
-- [ ] T056 Implement MDX tokenizer in packages/mdx-compiler/src/tokenizer.js
-- [ ] T057 Add JSX parser integration in packages/mdx-compiler/src/jsx.js
-- [ ] T058 Implement ESM code generator in packages/mdx-compiler/src/codegen.js
-- [ ] T059 Create compileMdx() in packages/mdx-compiler/src/index.js
-- [ ] T060 Create PR: Merge 001-phase-3.3-core → 001-faster-md-mdx
+- [x] T056 Implement MDX tokenizer in packages/mdx-compiler/src/tokenizer.js
+- [x] T057 Add JSX parser integration in packages/mdx-compiler/src/jsx.js
+- [x] T058 Implement ESM code generator in packages/mdx-compiler/src/codegen.js
+- [x] T059 Create compileMdx() in packages/mdx-compiler/src/index.js
+- [x] T060 Create PR: Merge 001-phase-3.3-core → 001-faster-md-mdx
 
 ## Phase 3.4: Integration
 **Branch**: `001-phase-3.4-integration`

@@ -1,0 +1,22 @@
+[package]
+name = "fmd-cli"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+description = "Command-line interface for faster-md"
+
+[[bin]]
+name = "fmd"
+path = "src/main.rs"
+
+[dependencies]
+fmd-core = { path = "../fmd-core" }
+fmd-html = { path = "../fmd-html" }
+fmd-gfm = { path = "../fmd-gfm" }
+clap = { version = "4.4", features = ["derive"] }
+anyhow = { workspace = true }
+serde_json = { workspace = true }

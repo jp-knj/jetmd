@@ -1,0 +1,50 @@
+{
+  "name": "mdx-compiler",
+  "version": "0.1.0",
+  "description": "MDX to ESM compiler for faster-md",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "lint": "biome check src",
+    "format": "biome format --write src"
+  },
+  "dependencies": {
+    "acorn": "catalog:",
+    "faster-md": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "@biomejs/biome": "catalog:"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jp-knj/jetmd.git",
+    "directory": "packages/mdx-compiler"
+  },
+  "keywords": [
+    "mdx",
+    "markdown",
+    "jsx",
+    "compiler"
+  ],
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "fixed": [],
+  "linked": [
+    ["faster-md", "mdx-compiler", "mdx-runtime", "faster-md-vite", "mdx-vite"]
+  ],
+  "access": "public",
+  "baseBranch": "001-faster-md-mdx",
+  "updateInternalDependencies": "patch",
+  "ignore": [],
+  "privatePackages": {
+    "version": true,
+    "tag": false
+  }
+}

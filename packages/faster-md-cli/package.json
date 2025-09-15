@@ -1,0 +1,42 @@
+{
+  "name": "faster-md-cli",
+  "version": "0.1.0",
+  "description": "CLI for faster-md",
+  "type": "module",
+  "bin": {
+    "fmd": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "lint": "biome check src",
+    "format": "biome format --write src"
+  },
+  "dependencies": {
+    "faster-md": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "@biomejs/biome": "catalog:"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jp-knj/jetmd.git",
+    "directory": "packages/faster-md-cli"
+  },
+  "keywords": [
+    "cli",
+    "markdown",
+    "converter"
+  ],
+  "author": "",
+  "license": "MIT"
+}

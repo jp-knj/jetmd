@@ -1,0 +1,17 @@
+[package]
+name = "fmd-html"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+description = "HTML renderer for faster-md AST"
+
+[dependencies]
+fmd-core = { path = "../fmd-core" }
+serde = { workspace = true }
+
+[dev-dependencies]
+insta = { workspace = true }

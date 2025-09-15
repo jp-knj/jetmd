@@ -1,0 +1,13 @@
+packages:
+  - 'packages/*'
+  - 'tests'
+
+catalog:
+  # Shared development dependencies
+  "@types/node": "^20.10.0"
+  "typescript": "^5.3.0"
+  "vitest": "^1.0.0"
+  "@biomejs/biome": "^1.5.0"
+  
+  # Shared production dependencies
+  "acorn": "^8.11.0"

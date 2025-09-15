@@ -1,0 +1,49 @@
+{
+  "name": "faster-md",
+  "version": "0.1.0",
+  "description": "High-performance Markdown processor with WASM",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "wasm"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "lint": "biome check src",
+    "format": "biome format --write src"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "@biomejs/biome": "catalog:"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jp-knj/jetmd.git",
+    "directory": "packages/faster-md"
+  },
+  "keywords": [
+    "markdown",
+    "parser",
+    "wasm",
+    "commonmark",
+    "gfm"
+  ],
+  "author": "",
+  "license": "MIT"
+}

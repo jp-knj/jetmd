@@ -1,0 +1,52 @@
+{
+  "name": "faster-md-vite",
+  "version": "0.1.0",
+  "description": "Vite plugin for faster-md",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "lint": "biome check src",
+    "format": "biome format --write src"
+  },
+  "dependencies": {
+    "faster-md": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "@biomejs/biome": "catalog:",
+    "vite": "^5.0.0"
+  },
+  "peerDependencies": {
+    "vite": "^4.0.0 || ^5.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jp-knj/jetmd.git",
+    "directory": "packages/faster-md-vite"
+  },
+  "keywords": [
+    "vite",
+    "vite-plugin",
+    "markdown"
+  ],
+  "author": "",
+  "license": "MIT"
+}

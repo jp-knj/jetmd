@@ -1,0 +1,14 @@
+{
+  "*.{js,jsx,ts,tsx,mjs,cjs}": [
+    "biome check --apply --no-errors-on-unmatched"
+  ],
+  "*.{json,md,yml,yaml}": [
+    "biome format --write --no-errors-on-unmatched"
+  ],
+  "*.rs": [
+    "cargo fmt --"
+  ],
+  "*.toml": [
+    "taplo fmt"
+  ]
+}

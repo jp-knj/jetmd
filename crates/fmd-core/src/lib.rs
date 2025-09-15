@@ -11,6 +11,7 @@ pub mod ast;
 pub mod position;
 pub mod scanner;
 pub mod inline;
+pub mod rope;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Document {

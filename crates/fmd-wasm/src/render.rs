@@ -1,12 +1,12 @@
 // WASM HTML rendering module
-use fmd_core::{Document, GfmOptions, ProcessorOptions};
+use fmd_core::{Document, ProcessorOptions};
 use fmd_html::{render_html, sanitize::SanitizeOptions, HtmlOptions};
 use serde_wasm_bindgen::{from_value, to_value};
 use wasm_bindgen::prelude::*;
 
 /// Render Markdown to HTML
-#[wasm_bindgen]
-pub fn renderHtml(content: &str, options: JsValue) -> Result<String, JsValue> {
+#[wasm_bindgen(js_name = renderHtml)]
+pub fn render_html(content: &str, options: JsValue) -> Result<String, JsValue> {
     // Parse options from JavaScript
     let js_opts = if options.is_undefined() || options.is_null() {
         serde_json::json!({})
@@ -42,8 +42,8 @@ pub fn renderHtml(content: &str, options: JsValue) -> Result<String, JsValue> {
 }
 
 /// Render with custom sanitization options
-#[wasm_bindgen]
-pub fn renderHtmlSafe(content: &str) -> Result<String, JsValue> {
+#[wasm_bindgen(js_name = renderHtml)]
+pub fn render_htmlSafe(content: &str) -> Result<String, JsValue> {
     let doc = Document::new(content);
     let parse_result = fmd_core::parse(&doc, ProcessorOptions::default());
 
@@ -59,7 +59,7 @@ pub fn renderHtmlSafe(content: &str) -> Result<String, JsValue> {
 }
 
 /// Render with GFM extensions
-#[wasm_bindgen]
+#[wasm_bindgen(js_name = renderHtml)]
 pub fn renderGfm(content: &str, options: JsValue) -> Result<String, JsValue> {
     let mut processor_opts = ProcessorOptions::default();
     processor_opts.gfm = true;
@@ -91,7 +91,7 @@ pub fn renderGfm(content: &str, options: JsValue) -> Result<String, JsValue> {
 }
 
 /// Get render statistics
-#[wasm_bindgen]
+#[wasm_bindgen(js_name = renderHtml)]
 pub fn getRenderStats(content: &str) -> Result<JsValue, JsValue> {
     let start = js_sys::Date::now();
 

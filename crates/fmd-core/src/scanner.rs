@@ -337,7 +337,7 @@ impl<'a> Scanner<'a> {
     // Optimized line scanning using memchr for better performance
     pub fn find_line_ends(&self) -> Vec<usize> {
         let mut line_ends = Vec::new();
-        let _pos = 0;
+        let mut pos = 0;
 
         // Use memchr for fast newline detection when available
         #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]

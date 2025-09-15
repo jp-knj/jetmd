@@ -51,9 +51,11 @@ pub fn render_html_safe(content: &str) -> Result<String, JsValue> {
         return Err(JsValue::from_str("Parse error"));
     }
 
-    let mut html_opts = HtmlOptions::default();
-    html_opts.sanitize = true;
-    html_opts.sanitize_options = SanitizeOptions::strict();
+    let html_opts = HtmlOptions {
+        sanitize: true,
+        sanitize_options: SanitizeOptions::strict(),
+        ..Default::default()
+    };
 
     Ok(fmd_render_html(&parse_result.ast, html_opts))
 }
@@ -61,8 +63,10 @@ pub fn render_html_safe(content: &str) -> Result<String, JsValue> {
 /// Render with GFM extensions
 #[wasm_bindgen(js_name = renderGfm)]
 pub fn render_gfm(content: &str, options: JsValue) -> Result<String, JsValue> {
-    let mut processor_opts = ProcessorOptions::default();
-    processor_opts.gfm = true;
+    let mut processor_opts = ProcessorOptions {
+        gfm: true,
+        ..Default::default()
+    };
 
     // Configure GFM options if provided
     if !options.is_undefined() && !options.is_null() {

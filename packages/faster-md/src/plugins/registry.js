@@ -6,7 +6,7 @@
  * @typedef {Object} Plugin
  * @property {string} name - Plugin name
  * @property {Function} [parser] - Parser transformer
- * @property {Function} [compiler] - Compiler transformer  
+ * @property {Function} [compiler] - Compiler transformer
  * @property {Function} [transformer] - AST transformer
  * @property {Object} [options] - Plugin options
  * @property {string} [version] - Plugin version
@@ -47,7 +47,7 @@ export class PluginRegistry {
       for (const conflict of plugin.conflicts) {
         if (this.plugins.has(conflict)) {
           throw new Error(
-            `Plugin "${plugin.name}" conflicts with already registered plugin "${conflict}"`
+            `Plugin "${plugin.name}" conflicts with already registered plugin "${conflict}"`,
           )
         }
       }
@@ -58,7 +58,7 @@ export class PluginRegistry {
       for (const dep of plugin.dependencies) {
         if (!this.plugins.has(dep)) {
           throw new Error(
-            `Plugin "${plugin.name}" requires plugin "${dep}" which is not registered`
+            `Plugin "${plugin.name}" requires plugin "${dep}" which is not registered`,
           )
         }
       }
@@ -85,13 +85,13 @@ export class PluginRegistry {
     for (const [pluginName, plugin] of this.plugins) {
       if (plugin.dependencies?.includes(name)) {
         throw new Error(
-          `Cannot unregister plugin "${name}" because plugin "${pluginName}" depends on it`
+          `Cannot unregister plugin "${name}" because plugin "${pluginName}" depends on it`,
         )
       }
     }
 
     this.plugins.delete(name)
-    this.order = this.order.filter(n => n !== name)
+    this.order = this.order.filter((n) => n !== name)
 
     return this
   }
@@ -119,7 +119,7 @@ export class PluginRegistry {
    * @returns {Plugin[]} Array of plugins
    */
   getAll() {
-    return this.order.map(name => this.plugins.get(name))
+    return this.order.map((name) => this.plugins.get(name))
   }
 
   /**
@@ -128,7 +128,7 @@ export class PluginRegistry {
    * @returns {Plugin[]} Plugins that have the specified phase
    */
   getByPhase(phase) {
-    return this.getAll().filter(plugin => typeof plugin[phase] === 'function')
+    return this.getAll().filter((plugin) => typeof plugin[phase] === 'function')
   }
 
   /**
@@ -139,11 +139,11 @@ export class PluginRegistry {
    */
   async applyParsers(markdown, processor) {
     let result = markdown
-    
+
     for (const plugin of this.getByPhase('parser')) {
       result = await plugin.parser(result, processor)
     }
-    
+
     return result
   }
 
@@ -155,11 +155,11 @@ export class PluginRegistry {
    */
   async applyTransformers(ast, processor) {
     let result = ast
-    
+
     for (const plugin of this.getByPhase('transformer')) {
       result = await plugin.transformer(result, processor)
     }
-    
+
     return result
   }
 
@@ -171,11 +171,11 @@ export class PluginRegistry {
    */
   async applyCompilers(ast, processor) {
     let result = ast
-    
+
     for (const plugin of this.getByPhase('compiler')) {
       result = await plugin.compiler(result, processor)
     }
-    
+
     return result
   }
 
@@ -194,11 +194,11 @@ export class PluginRegistry {
    */
   clone() {
     const registry = new PluginRegistry()
-    
+
     for (const plugin of this.getAll()) {
       registry.register(plugin)
     }
-    
+
     return registry
   }
 
@@ -213,7 +213,7 @@ export class PluginRegistry {
 
     this.plugins.clear()
     this.order = []
-    
+
     return this
   }
 

@@ -3,14 +3,14 @@
 
 import { readFile } from 'node:fs/promises'
 import { createFilter } from '@rollup/pluginutils'
-import { renderHtml, parse, createProcessor } from 'faster-md'
+import { createProcessor, parse, renderHtml } from 'faster-md'
 import matter from 'gray-matter'
 
 /**
  * Vite plugin options
  * @typedef {Object} VitePluginOptions
- * @property {string[]} [include] - Files to include (default: ['**/*.md'])
- * @property {string[]} [exclude] - Files to exclude (default: ['**/node_modules/**'])
+ * @property {string[]} [include] - Files to include
+ * @property {string[]} [exclude] - Files to exclude
  * @property {boolean} [gfm] - Enable GitHub Flavored Markdown (default: true)
  * @property {boolean} [frontmatter] - Enable frontmatter parsing (default: true)
  * @property {boolean} [sanitize] - Enable HTML sanitization (default: true)
@@ -50,7 +50,7 @@ export function fasterMdPlugin(options = {}) {
 
   return {
     name: 'vite-plugin-faster-md',
-    
+
     async transform(code, id) {
       if (!filter(id)) {
         return null
@@ -59,7 +59,7 @@ export function fasterMdPlugin(options = {}) {
       // Parse frontmatter if enabled
       let content = code
       let frontmatterData = {}
-      
+
       if (frontmatter) {
         const parsed = matter(code)
         content = parsed.content
@@ -90,17 +90,15 @@ export function fasterMdPlugin(options = {}) {
 
       // Generate output based on mode
       let output
-      
+
       switch (mode) {
         case 'react':
           output = generateReactModule(html, frontmatterData, id)
           break
-          
+
         case 'vue':
           output = generateVueModule(html, frontmatterData, id)
           break
-          
-        case 'html':
         default:
           output = generateHtmlModule(html, frontmatterData, id)
           break
@@ -143,10 +141,10 @@ export function fasterMdPlugin(options = {}) {
         try {
           const filePath = req.url.slice(1) // Remove leading slash
           const content = await readFile(filePath, 'utf-8')
-          
+
           // Parse and render
           const html = await processor.process(content)
-          
+
           res.setHeader('Content-Type', 'text/html')
           res.end(wrapInHtmlDocument(html))
         } catch (error) {
@@ -161,9 +159,10 @@ export function fasterMdPlugin(options = {}) {
  * Generate HTML module
  */
 function generateHtmlModule(html, frontmatter, id) {
-  const frontmatterExport = Object.keys(frontmatter).length > 0
-    ? `export const frontmatter = ${JSON.stringify(frontmatter)};`
-    : ''
+  const frontmatterExport =
+    Object.keys(frontmatter).length > 0
+      ? `export const frontmatter = ${JSON.stringify(frontmatter)};`
+      : ''
 
   return `
 ${frontmatterExport}
@@ -186,9 +185,10 @@ if (import.meta.hot) {
  * Generate React module
  */
 function generateReactModule(html, frontmatter, id) {
-  const frontmatterExport = Object.keys(frontmatter).length > 0
-    ? `export const frontmatter = ${JSON.stringify(frontmatter)};`
-    : ''
+  const frontmatterExport =
+    Object.keys(frontmatter).length > 0
+      ? `export const frontmatter = ${JSON.stringify(frontmatter)};`
+      : ''
 
   return `
 import React from 'react';
@@ -221,10 +221,8 @@ if (import.meta.hot) {
 /**
  * Generate Vue module
  */
-function generateVueModule(html, frontmatter, id) {
-  const frontmatterData = Object.keys(frontmatter).length > 0
-    ? JSON.stringify(frontmatter)
-    : 'null'
+function generateVueModule(html, frontmatter, _id) {
+  const frontmatterData = Object.keys(frontmatter).length > 0 ? JSON.stringify(frontmatter) : 'null'
 
   return `
 <template>

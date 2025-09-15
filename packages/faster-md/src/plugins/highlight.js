@@ -47,7 +47,7 @@ export function highlightPlugin(options = {}) {
   return createPlugin('highlight')
     .version('1.0.0')
     .options(options)
-    .transformer((ast, processor) => {
+    .transformer((ast, _processor) => {
       // Walk the AST and highlight code blocks
       return walkAndHighlight(ast, {
         highlighter,
@@ -81,9 +81,7 @@ function walkAndHighlight(node, options) {
 
   // Recursively process children
   if (node.children && Array.isArray(node.children)) {
-    node.children = node.children.map(child => 
-      walkAndHighlight(child, options)
-    )
+    node.children = node.children.map((child) => walkAndHighlight(child, options))
   }
 
   return node
@@ -114,7 +112,7 @@ function highlightCodeBlock(node, options) {
 
   // Apply highlighting
   let highlightedCode
-  
+
   if (highlighter && typeof highlighter === 'function') {
     // Use custom highlighter
     highlightedCode = highlighter(node.value, language, options)
@@ -150,7 +148,7 @@ function highlightInlineCode(node, options) {
   const language = detectInlineLanguage(node) || defaultLanguage
 
   let highlightedCode
-  
+
   if (highlighter && typeof highlighter === 'function') {
     highlightedCode = highlighter(node.value, language, { ...options, inline: true })
   } else {
@@ -174,7 +172,7 @@ function highlightInlineCode(node, options) {
 function builtinHighlight(code, language, theme) {
   // This is a simplified highlighter
   // In production, you would use Prism.js, highlight.js, or shiki
-  
+
   const themes = {
     github: {
       keyword: 'color: #d73a49',
@@ -197,7 +195,11 @@ function builtinHighlight(code, language, theme) {
   // Language-specific patterns
   const patterns = {
     javascript: [
-      { regex: /\b(const|let|var|function|return|if|else|for|while|class|extends|import|export|from|async|await)\b/g, class: 'keyword' },
+      {
+        regex:
+          /\b(const|let|var|function|return|if|else|for|while|class|extends|import|export|from|async|await)\b/g,
+        class: 'keyword',
+      },
       { regex: /(["'`])(?:(?=(\\?))\2.)*?\1/g, class: 'string' },
       { regex: /\/\/.*$/gm, class: 'comment' },
       { regex: /\/\*[\s\S]*?\*\//g, class: 'comment' },
@@ -205,7 +207,11 @@ function builtinHighlight(code, language, theme) {
       { regex: /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g, class: 'function' },
     ],
     python: [
-      { regex: /\b(def|class|if|else|elif|for|while|return|import|from|as|try|except|finally|with|async|await)\b/g, class: 'keyword' },
+      {
+        regex:
+          /\b(def|class|if|else|elif|for|while|return|import|from|as|try|except|finally|with|async|await)\b/g,
+        class: 'keyword',
+      },
       { regex: /(["'])(?:(?=(\\?))\2.)*?\1/g, class: 'string' },
       { regex: /#.*$/gm, class: 'comment' },
       { regex: /\b\d+(\.\d+)?\b/g, class: 'number' },
@@ -226,15 +232,16 @@ function builtinHighlight(code, language, theme) {
 
   // Get patterns for language
   const langPatterns = patterns[language] || []
-  
+
   // Escape HTML
   let highlighted = escapeHtml(code)
 
   // Apply highlighting
   for (const pattern of langPatterns) {
     const style = colors[pattern.class] || ''
-    highlighted = highlighted.replace(pattern.regex, (match) => 
-      `<span style="${style}">${match}</span>`
+    highlighted = highlighted.replace(
+      pattern.regex,
+      (match) => `<span style="${style}">${match}</span>`,
     )
   }
 
@@ -244,7 +251,7 @@ function builtinHighlight(code, language, theme) {
 /**
  * Built-in inline highlighting
  */
-function builtinHighlightInline(code, language, theme) {
+function builtinHighlightInline(code, _language, _theme) {
   // Simpler highlighting for inline code
   return `<span class="inline-code">${escapeHtml(code)}</span>`
 }
@@ -254,17 +261,18 @@ function builtinHighlightInline(code, language, theme) {
  */
 function addLineNumbers(code, wrapLines) {
   const lines = code.split('\n')
-  
-  return lines.map((line, index) => {
-    const lineNumber = index + 1
-    const lineClass = `line line-${lineNumber}`
-    
-    if (wrapLines) {
-      return `<span class="${lineClass}"><span class="line-number">${lineNumber}</span>${line}</span>`
-    } else {
+
+  return lines
+    .map((line, index) => {
+      const lineNumber = index + 1
+      const lineClass = `line line-${lineNumber}`
+
+      if (wrapLines) {
+        return `<span class="${lineClass}"><span class="line-number">${lineNumber}</span>${line}</span>`
+      }
       return `<span class="line-number">${lineNumber}</span>${line}`
-    }
-  }).join('\n')
+    })
+    .join('\n')
 }
 
 /**
@@ -273,14 +281,14 @@ function addLineNumbers(code, wrapLines) {
 function detectInlineLanguage(node) {
   // Simple heuristics for language detection
   const value = node.value
-  
+
   // Check for common patterns
   if (/^(const|let|var|function)\s/.test(value)) return 'javascript'
   if (/^(def|class|import)\s/.test(value)) return 'python'
   if (/^<[a-zA-Z]/.test(value)) return 'html'
   if (/^[.#][a-zA-Z]/.test(value)) return 'css'
   if (/^\$/.test(value)) return 'bash'
-  
+
   return null
 }
 
@@ -295,8 +303,8 @@ function escapeHtml(str) {
     '"': '&quot;',
     "'": '&#39;',
   }
-  
-  return str.replace(/[&<>"']/g, char => htmlEscapes[char])
+
+  return str.replace(/[&<>"']/g, (char) => htmlEscapes[char])
 }
 
 /**
@@ -309,14 +317,14 @@ export const presets = {
     lineNumbers: false,
     inline: true,
   },
-  
+
   highlightjs: {
     highlighter: null, // Would be hljs.highlight
     theme: 'github',
     lineNumbers: false,
     inline: false,
   },
-  
+
   shiki: {
     highlighter: null, // Would be shiki.getHighlighter
     theme: 'github-dark',
@@ -330,7 +338,7 @@ export const presets = {
  */
 export function highlightWithPreset(preset, options = {}) {
   const presetConfig = typeof preset === 'string' ? presets[preset] : preset
-  
+
   if (!presetConfig) {
     throw new Error(`Unknown highlight preset: ${preset}`)
   }

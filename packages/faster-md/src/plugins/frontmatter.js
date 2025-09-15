@@ -1,8 +1,8 @@
 // Frontmatter plugin for faster-md
 // Parses YAML/JSON frontmatter from markdown documents
 
-import { createPlugin } from './registry.js'
 import matter from 'gray-matter'
+import { createPlugin } from './registry.js'
 
 /**
  * Frontmatter plugin options
@@ -48,7 +48,7 @@ export function frontmatterPlugin(options = {}) {
       }
 
       const parsed = matter(markdown, matterOptions)
-      
+
       // Transform frontmatter if needed
       let frontmatterData = parsed.data
       if (transform && typeof transform === 'function') {
@@ -57,7 +57,7 @@ export function frontmatterPlugin(options = {}) {
 
       // Store frontmatter in processor data
       processor.data('frontmatter', frontmatterData)
-      
+
       if (parsed.excerpt) {
         processor.data('excerpt', parsed.excerpt)
       }
@@ -100,8 +100,8 @@ export function frontmatterPlugin(options = {}) {
       // Frontmatter doesn't render to HTML by default
       // But we can add metadata comments or data attributes
       const frontmatter = processor.data('frontmatter')
-      
-      if (frontmatter && frontmatter.renderMeta) {
+
+      if (frontmatter?.renderMeta) {
         return addMetadataToHtml(ast, frontmatter)
       }
 
@@ -121,10 +121,12 @@ function processFrontmatterDirectives(ast, frontmatter) {
     ast.children.splice(1, 0, {
       type: 'heading',
       depth: 1,
-      children: [{
-        type: 'text',
-        value: frontmatter.title,
-      }],
+      children: [
+        {
+          type: 'text',
+          value: frontmatter.title,
+        },
+      ],
     })
   }
 
@@ -134,7 +136,7 @@ function processFrontmatterDirectives(ast, frontmatter) {
     if (toc) {
       const tocPosition = frontmatter.tocPosition || 'after-title'
       const insertIndex = tocPosition === 'top' ? 1 : 2
-      
+
       ast.children.splice(insertIndex, 0, toc)
     }
   }
@@ -159,10 +161,8 @@ function processFrontmatterDirectives(ast, frontmatter) {
  */
 function hasHeading(ast) {
   if (!ast.children) return false
-  
-  return ast.children.some(node => 
-    node.type === 'heading' && node.depth === 1
-  )
+
+  return ast.children.some((node) => node.type === 'heading' && node.depth === 1)
 }
 
 /**
@@ -170,21 +170,25 @@ function hasHeading(ast) {
  */
 function generateTableOfContents(ast) {
   const headings = extractHeadings(ast)
-  
+
   if (headings.length === 0) {
     return null
   }
 
-  const tocItems = headings.map(heading => ({
+  const tocItems = headings.map((heading) => ({
     type: 'listItem',
-    children: [{
-      type: 'link',
-      url: `#${slugify(heading.text)}`,
-      children: [{
-        type: 'text',
-        value: heading.text,
-      }],
-    }],
+    children: [
+      {
+        type: 'link',
+        url: `#${slugify(heading.text)}`,
+        children: [
+          {
+            type: 'text',
+            value: heading.text,
+          },
+        ],
+      },
+    ],
     depth: heading.depth - 1,
   }))
 
@@ -197,10 +201,12 @@ function generateTableOfContents(ast) {
       {
         type: 'heading',
         depth: 2,
-        children: [{
-          type: 'text',
-          value: 'Table of Contents',
-        }],
+        children: [
+          {
+            type: 'text',
+            value: 'Table of Contents',
+          },
+        ],
       },
       {
         type: 'list',
@@ -292,8 +298,8 @@ function addMetadataToHtml(ast, frontmatter) {
       wrapper.properties['data-author'] = frontmatter.author
     }
     if (frontmatter.tags) {
-      wrapper.properties['data-tags'] = Array.isArray(frontmatter.tags) 
-        ? frontmatter.tags.join(',') 
+      wrapper.properties['data-tags'] = Array.isArray(frontmatter.tags)
+        ? frontmatter.tags.join(',')
         : frontmatter.tags
     }
 
@@ -339,7 +345,7 @@ export const presets = {
  */
 export function frontmatterWithPreset(preset, options = {}) {
   const presetConfig = typeof preset === 'string' ? presets[preset] : preset
-  
+
   if (!presetConfig) {
     throw new Error(`Unknown frontmatter preset: ${preset}`)
   }

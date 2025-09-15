@@ -1,5 +1,10 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.5.0/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
   "organizeImports": {
     "enabled": true
   },
@@ -40,15 +45,18 @@
   },
   "files": {
     "ignore": [
-      "node_modules",
-      "dist",
-      "build",
-      "coverage",
-      "*.min.js",
-      "target",
-      "crates/*/target",
-      "packages/*/dist",
-      ".changeset"
+      "**/node_modules",
+      "**/dist",
+      "**/build",
+      "**/coverage",
+      "**/*.min.js",
+      "**/target/**",
+      "target/**",
+      "crates/*/target/**",
+      "crates/*/pkg/**",
+      "packages/*/dist/**",
+      ".changeset/**",
+      "pkg/**"
     ]
   }
 }

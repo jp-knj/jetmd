@@ -9,18 +9,18 @@ import { SourceMapGenerator } from 'source-map'
 /**
  * MDX Vite plugin options
  * @typedef {Object} MdxViteOptions
- * @property {string[]} [include] - Files to include (default: ['**/*.mdx'])
- * @property {string[]} [exclude] - Files to exclude (default: ['**/node_modules/**'])
- * @property {string} [jsxRuntime] - JSX runtime: 'classic' or 'automatic' (default: 'automatic')
- * @property {string} [jsxImportSource] - JSX import source (default: 'react')
- * @property {string} [pragma] - JSX pragma for classic runtime (default: 'React.createElement')
- * @property {string} [pragmaFrag] - Fragment pragma for classic runtime (default: 'React.Fragment')
- * @property {boolean} [development] - Development mode (default: false)
+ * @property {string[]} [include] - Files to include
+ * @property {string[]} [exclude] - Files to exclude
+ * @property {string} [jsxRuntime] - JSX runtime: 'classic' or 'automatic'
+ * @property {string} [jsxImportSource] - JSX import source
+ * @property {string} [pragma] - JSX pragma for classic runtime
+ * @property {string} [pragmaFrag] - Fragment pragma for classic runtime
+ * @property {boolean} [development] - Development mode
  * @property {string} [providerImportSource] - MDX provider import source
- * @property {boolean} [hmr] - Enable HMR (default: true)
- * @property {Function[]} [remarkPlugins] - Remark plugins (default: [])
- * @property {Function[]} [rehypePlugins] - Rehype plugins (default: [])
- * @property {Function[]} [recmaPlugins] - Recma plugins (default: [])
+ * @property {boolean} [hmr] - Enable HMR
+ * @property {Function[]} [remarkPlugins] - Remark plugins
+ * @property {Function[]} [rehypePlugins] - Rehype plugins
+ * @property {Function[]} [recmaPlugins] - Recma plugins
  * @property {Function} [beforeCompile] - Hook before compilation
  * @property {Function} [afterCompile] - Hook after compilation
  */
@@ -52,9 +52,9 @@ export function mdxPlugin(options = {}) {
 
   return {
     name: 'vite-plugin-mdx',
-    
+
     enforce: 'pre', // Run before other transforms
-    
+
     async transform(code, id) {
       if (!filter(id)) {
         return null
@@ -111,12 +111,12 @@ export function mdxPlugin(options = {}) {
       }
 
       // Custom HMR handling for MDX files
-      const module = modules.find(m => filter(m.id || m.file))
-      
+      const module = modules.find((m) => filter(m.id || m.file))
+
       if (module) {
         // Invalidate the module
         server.moduleGraph.invalidateModule(module)
-        
+
         // Send custom HMR event
         server.ws.send({
           type: 'custom',
@@ -225,20 +225,20 @@ export const presets = {
     jsxImportSource: 'react',
     providerImportSource: '@mdx-js/react',
   },
-  
+
   preact: {
     jsxRuntime: 'automatic',
     jsxImportSource: 'preact',
     providerImportSource: '@mdx-js/preact',
   },
-  
+
   vue: {
     jsxRuntime: 'automatic',
     jsxImportSource: 'vue',
     pragma: 'h',
     pragmaFrag: 'Fragment',
   },
-  
+
   solid: {
     jsxRuntime: 'automatic',
     jsxImportSource: 'solid-js',
@@ -251,11 +251,11 @@ export const presets = {
  */
 export function mdxPluginWithPreset(preset, options = {}) {
   const presetConfig = typeof preset === 'string' ? presets[preset] : preset
-  
+
   if (!presetConfig) {
     throw new Error(`Unknown MDX preset: ${preset}`)
   }
-  
+
   return mdxPlugin({
     ...presetConfig,
     ...options,

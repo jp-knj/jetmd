@@ -39,7 +39,7 @@ export function gfmPlugin(options = {}) {
       footnotes,
       tagFilter,
     })
-    .parser((markdown, processor) => {
+    .parser((markdown, _processor) => {
       // Pre-process GFM syntax before main parser
       let result = markdown
 
@@ -55,7 +55,7 @@ export function gfmPlugin(options = {}) {
 
       return result
     })
-    .transformer((ast, processor) => {
+    .transformer((ast, _processor) => {
       // Transform AST for GFM features
       return transformGfmAst(ast, {
         tables,
@@ -66,7 +66,7 @@ export function gfmPlugin(options = {}) {
         tagFilter,
       })
     })
-    .compiler((ast, processor) => {
+    .compiler((ast, _processor) => {
       // Add GFM-specific rendering
       return ast
     })
@@ -89,10 +89,10 @@ function processTaskLists(markdown) {
 function processFootnotes(markdown) {
   const footnoteRefs = new Map()
   const footnoteDefinitions = new Map()
-  
+
   // Find footnote references [^1]
   let refCounter = 0
-  markdown = markdown.replace(/\[\^([^\]]+)\]/g, (match, id) => {
+  markdown = markdown.replace(/\[\^([^\]]+)\]/g, (_match, id) => {
     refCounter++
     footnoteRefs.set(id, refCounter)
     return `[^${refCounter}]`
@@ -106,12 +106,12 @@ function processFootnotes(markdown) {
 
   for (const line of lines) {
     const footnoteDef = line.match(/^\[\^([^\]]+)\]:\s*(.*)/)
-    
+
     if (footnoteDef) {
       const [, id, content] = footnoteDef
       currentFootnote = id
       inFootnote = true
-      
+
       if (!footnoteDefinitions.has(id)) {
         footnoteDefinitions.set(id, [])
       }
@@ -131,7 +131,7 @@ function processFootnotes(markdown) {
     processedLines.push('')
     processedLines.push('---')
     processedLines.push('')
-    
+
     for (const [id, lines] of footnoteDefinitions) {
       const num = footnoteRefs.get(id)
       processedLines.push(`[^${num}]: ${lines.join(' ')}`)
@@ -187,8 +187,8 @@ function transformParagraph(node, options) {
   if (!node.children) return node
 
   const newChildren = []
-  
-  for (let child of node.children) {
+
+  for (const child of node.children) {
     if (child.type === 'text') {
       // Process strikethrough ~~text~~
       if (options.strikethrough) {
@@ -232,10 +232,12 @@ function processStrikethrough(text) {
     // Add strikethrough node
     parts.push({
       type: 'delete',
-      children: [{
-        type: 'text',
-        value: match[1],
-      }],
+      children: [
+        {
+          type: 'text',
+          value: match[1],
+        },
+      ],
     })
 
     lastIndex = regex.lastIndex
@@ -261,7 +263,7 @@ function processAutolinks(text) {
   const urlRegex = /\b(https?:\/\/[^\s<]+[^<.,:;"')\]\s])/g
   // Email regex
   const emailRegex = /\b([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\b/g
-  
+
   let lastIndex = 0
   const matches = []
 
@@ -303,10 +305,12 @@ function processAutolinks(text) {
     parts.push({
       type: 'link',
       url: match.type === 'email' ? `mailto:${match.value}` : match.value,
-      children: [{
-        type: 'text',
-        value: match.value,
-      }],
+      children: [
+        {
+          type: 'text',
+          value: match.value,
+        },
+      ],
     })
 
     lastIndex = match.index + match.length
@@ -332,21 +336,25 @@ function transformList(node, options) {
   for (const item of node.children) {
     if (item.type === 'listItem' && item.children && item.children.length > 0) {
       const firstChild = item.children[0]
-      
-      if (firstChild.type === 'paragraph' && firstChild.children && firstChild.children.length > 0) {
+
+      if (
+        firstChild.type === 'paragraph' &&
+        firstChild.children &&
+        firstChild.children.length > 0
+      ) {
         const textNode = firstChild.children[0]
-        
+
         if (textNode.type === 'text') {
           // Check for task list syntax
           const taskMatch = textNode.value.match(/^\[([ x])\]\s+(.*)/)
-          
+
           if (taskMatch) {
             const [, checked, text] = taskMatch
-            
+
             // Add task list properties
             item.checked = checked === 'x'
             item.task = true
-            
+
             // Update text
             textNode.value = text
           }
@@ -361,7 +369,7 @@ function transformList(node, options) {
 /**
  * Transform text nodes for GFM features
  */
-function transformText(node, options) {
+function transformText(node, _options) {
   // Text transformation happens in paragraph processing
   return node
 }

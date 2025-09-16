@@ -35,7 +35,7 @@ fn generate_markdown(target_size: usize) -> String {
 /// Benchmark parsing latency for different document sizes
 fn bench_parse_latency(c: &mut Criterion) {
     let mut group = c.benchmark_group("parse_latency");
-    
+
     // Configure for latency measurement
     group.measurement_time(Duration::from_secs(10));
     group.sample_size(500);
@@ -44,7 +44,7 @@ fn bench_parse_latency(c: &mut Criterion) {
     let sizes = vec![
         ("1KB", 1024),
         ("10KB", 10 * 1024),
-        ("50KB", 50 * 1024),  // Key target: <3ms p50
+        ("50KB", 50 * 1024), // Key target: <3ms p50
         ("100KB", 100 * 1024),
         ("500KB", 500 * 1024),
     ];
@@ -52,7 +52,7 @@ fn bench_parse_latency(c: &mut Criterion) {
     for (name, size) in sizes {
         let content = generate_markdown(size);
         let content_clone = content.clone();
-        
+
         group.bench_with_input(
             BenchmarkId::new("parse", name),
             &content_clone,
@@ -71,14 +71,14 @@ fn bench_parse_latency(c: &mut Criterion) {
 /// Benchmark render latency for different document sizes
 fn bench_render_latency(c: &mut Criterion) {
     let mut group = c.benchmark_group("render_latency");
-    
+
     group.measurement_time(Duration::from_secs(10));
     group.sample_size(500);
 
     let sizes = vec![
         ("1KB", 1024),
         ("10KB", 10 * 1024),
-        ("50KB", 50 * 1024),  // Key target: <3ms p50
+        ("50KB", 50 * 1024), // Key target: <3ms p50
         ("100KB", 100 * 1024),
         ("500KB", 500 * 1024),
     ];
@@ -86,7 +86,7 @@ fn bench_render_latency(c: &mut Criterion) {
     for (name, size) in sizes {
         let content = generate_markdown(size);
         let content_clone = content.clone();
-        
+
         group.bench_with_input(
             BenchmarkId::new("render", name),
             &content_clone,
@@ -106,7 +106,7 @@ fn bench_render_latency(c: &mut Criterion) {
 /// Benchmark end-to-end latency (parse + render)
 fn bench_e2e_latency(c: &mut Criterion) {
     let mut group = c.benchmark_group("e2e_latency");
-    
+
     group.measurement_time(Duration::from_secs(15));
     group.sample_size(1000);
 
@@ -125,20 +125,20 @@ fn bench_e2e_latency(c: &mut Criterion) {
     // Measure percentiles
     group.bench_function("50KB_percentiles", |b| {
         let mut times = Vec::with_capacity(1000);
-        
+
         b.iter_custom(|iters| {
             let start = std::time::Instant::now();
-            
+
             for _ in 0..iters {
                 let iter_start = std::time::Instant::now();
-                
+
                 let options = Options::default().with_gfm(true).with_sanitize(true);
                 let ast = parse(black_box(&content_clone), options.clone()).unwrap();
                 let _ = render_html(&ast, options);
-                
+
                 times.push(iter_start.elapsed());
             }
-            
+
             start.elapsed()
         });
 
@@ -148,16 +148,16 @@ fn bench_e2e_latency(c: &mut Criterion) {
             let p50_idx = times.len() / 2;
             let p95_idx = (times.len() as f64 * 0.95) as usize;
             let p99_idx = (times.len() as f64 * 0.99) as usize;
-            
+
             let p50 = times[p50_idx];
             let p95 = times[p95_idx.min(times.len() - 1)];
             let p99 = times[p99_idx.min(times.len() - 1)];
-            
+
             println!("\n50KB Document Latency Percentiles:");
             println!("  P50: {:.2}ms", p50.as_secs_f64() * 1000.0);
             println!("  P95: {:.2}ms", p95.as_secs_f64() * 1000.0);
             println!("  P99: {:.2}ms", p99.as_secs_f64() * 1000.0);
-            
+
             // Check against target
             if p50.as_secs_f64() * 1000.0 < 3.0 {
                 println!("  ✅ PASS: P50 < 3ms target");
@@ -173,29 +173,36 @@ fn bench_e2e_latency(c: &mut Criterion) {
 /// Benchmark incremental parsing latency
 fn bench_incremental_latency(c: &mut Criterion) {
     let mut group = c.benchmark_group("incremental_latency");
-    
+
     group.measurement_time(Duration::from_secs(10));
     group.sample_size(500);
 
     let base_content = generate_markdown(50 * 1024);
-    
+
     // Simulate small edits
     let edits = vec![
-        ("append_paragraph", format!("{}\n\nNew paragraph added.", base_content)),
-        ("modify_heading", base_content.replace("# Heading Level 1", "# Modified Heading")),
-        ("insert_list_item", base_content.replace("- List item 3", "- List item 3\n- List item 4")),
+        (
+            "append_paragraph",
+            format!("{}\n\nNew paragraph added.", base_content),
+        ),
+        (
+            "modify_heading",
+            base_content.replace("# Heading Level 1", "# Modified Heading"),
+        ),
+        (
+            "insert_list_item",
+            base_content.replace("- List item 3", "- List item 3\n- List item 4"),
+        ),
     ];
 
     for (edit_name, modified_content) in edits {
         group.bench_function(format!("50KB_{}", edit_name), |b| {
             b.iter(|| {
-                let options = Options::default()
-                    .with_gfm(true)
-                    .with_incremental(true);
-                
+                let options = Options::default().with_gfm(true).with_incremental(true);
+
                 // Parse original
                 let original_ast = parse(black_box(&base_content), options.clone()).unwrap();
-                
+
                 // Parse modified with incremental hints
                 let _modified_ast = parse(black_box(&modified_content), options).unwrap();
             });

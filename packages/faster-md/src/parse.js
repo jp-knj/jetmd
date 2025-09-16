@@ -29,7 +29,7 @@ export async function parse(markdown, options = {}) {
   try {
     // Call the WASM parseToAst function - pass options object directly
     const resultJson = wasm.parseToAst(markdown, options)
-    
+
     // Parse the JSON string returned by WASM
     const result = typeof resultJson === 'string' ? JSON.parse(resultJson) : resultJson
 

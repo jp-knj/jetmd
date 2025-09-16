@@ -3,6 +3,7 @@
 
 import { getWasmInstance } from './loader.js'
 import { parse } from './parse.js'
+import { getCached, setCached, clearCache, getCacheStats } from './cache.js'
 
 /**
  * HTML render options
@@ -22,6 +23,14 @@ import { parse } from './parse.js'
  * @returns {Promise<string>} The rendered HTML
  */
 export async function renderHtml(input, options = {}) {
+  // Check cache for string inputs
+  if (typeof input === 'string') {
+    const cached = getCached(input, options)
+    if (cached) {
+      return cached
+    }
+  }
+
   const wasm = await getWasmInstance()
 
   try {
@@ -29,6 +38,8 @@ export async function renderHtml(input, options = {}) {
     if (typeof input === 'string') {
       // Pass options object directly, not JSON string
       const html = wasm.renderHtml(input, options)
+      // Cache the result
+      setCached(input, options, html)
       return html
     }
 
@@ -67,7 +78,7 @@ export function renderHtmlSync(input, options = {}) {
 
   try {
     if (typeof input === 'string') {
-      // Pass options object directly, not JSON string  
+      // Pass options object directly, not JSON string
       return wasm.renderHtml(input, options)
     }
 

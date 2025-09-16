@@ -46,7 +46,7 @@ async function loadWasmModule() {
 
       // Import the JS bindings
       const wasmModule = await import('../../wasm/fmd_wasm.js')
-      
+
       // Initialize the WASM module
       if (wasmModule.default && typeof wasmModule.default === 'function') {
         await wasmModule.default(wasmBuffer)

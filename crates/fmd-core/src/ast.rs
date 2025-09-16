@@ -49,10 +49,10 @@ pub struct Node {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub identifier: Option<String>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub start: Option<u64>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub align: Option<Vec<String>>,
 }
@@ -106,11 +106,11 @@ pub enum NodeType {
     ContainerDirective,
     LeafDirective,
     TextDirective,
-    
+
     // Math
     Math,
     InlineMath,
-    
+
     // YAML
     Yaml,
 }

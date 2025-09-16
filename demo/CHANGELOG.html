@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHANGELOG.md</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 1rem;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    code {
+      background: #f4f4f4;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+    }
+    blockquote {
+      border-left: 4px solid #ddd;
+      margin: 0;
+      padding-left: 1rem;
+      color: #666;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1rem 0;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 0.5rem;
+      text-align: left;
+    }
+    th {
+      background: #f4f4f4;
+    }
+    input[type="checkbox"] {
+      margin-right: 0.5rem;
+    }
+    del {
+      text-decoration: line-through;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+<h1>Changelog</h1>
+<p>All notable changes to this project will be documented in this file.</p>
+<h2>[0.1.0] - 2024-01-15</h2>
+<h3>Added</h3>
+<ul>
+<li>✨ Initial release</li>
+<li>🚀 WASM-based parser using pulldown-cmark</li>
+<li>📝 CommonMark compliance (99.5%)</li>
+<li>🎯 GFM extensions support<ul>
+<li>Tables</li>
+<li>Strikethrough</li>
+<li>Task lists</li>
+<li>Autolinks</li>
+</ul>
+</li>
+<li>⚡ Performance optimizations<ul>
+<li>100 MB/s throughput</li>
+<li>&lt;3ms latency for 50KB documents</li>
+</ul>
+</li>
+<li>📚 Comprehensive documentation</li>
+<li>🧪 Test suite with 95% coverage</li>
+</ul>
+<h3>Performance Benchmarks</h3>
+<pre><code>Document Size | Throughput | Latency (p50) | Memory
+-------------|------------|---------------|--------
+1 KB         | 120 MB/s   | 0.08ms        | 1.5 KB
+10 KB        | 110 MB/s   | 0.9ms         | 15 KB
+50 KB        | 100 MB/s   | 1.2ms         | 75 KB
+100 KB       | 95 MB/s    | 2.5ms         | 150 KB
+</code></pre>
+<h3>Fixed</h3>
+<ul>
+<li>🐛 WASM panic with time API</li>
+<li>🔧 Serde serialization issues</li>
+<li>🎨 Options passing (object vs JSON string)</li>
+</ul>
+<h3>Security</h3>
+<ul>
+<li>🔒 HTML sanitization enabled by default</li>
+<li>🛡️ XSS protection</li>
+</ul>
+<h2>[Unreleased]</h2>
+<h3>Planned</h3>
+<ul>
+<li> MDX support</li>
+<li> Incremental parsing optimization</li>
+<li> Plugin system</li>
+<li> Native bindings (Neon)</li>
+</ul>
+<hr>
+<p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/" rel="noopener noreferrer">Keep a Changelog</a></p>
+
+</body>
+</html>

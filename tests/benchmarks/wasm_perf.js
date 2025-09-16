@@ -5,11 +5,11 @@
  * Target: ≥50 MB/s throughput
  */
 
-import { fileURLToPath } from 'node:url'
 import { readFile } from 'node:fs/promises'
-import { join, dirname } from 'node:path'
+import { dirname, join } from 'node:path'
 import { performance } from 'node:perf_hooks'
-import { renderHtml, parse } from '../../packages/faster-md/dist/index.js'
+import { fileURLToPath } from 'node:url'
+import { parse, renderHtml } from '../../packages/faster-md/dist/index.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -199,9 +199,9 @@ async function main() {
   for (const result of results) {
     const status = result.throughput >= TARGET_THROUGHPUT ? '✅ PASS' : '❌ FAIL'
     console.log(
-      `  ${result.name}: ${result.throughput.toFixed(2)} MB/s (${
-        result.median.toFixed(2)
-      } ms median) ${status}`,
+      `  ${result.name}: ${result.throughput.toFixed(2)} MB/s (${result.median.toFixed(
+        2,
+      )} ms median) ${status}`,
     )
   }
 

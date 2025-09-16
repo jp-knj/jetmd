@@ -10,7 +10,7 @@ use pulldown_cmark::{
 
 pub fn parse_with_pulldown(doc: &Document, options: ProcessorOptions) -> Node {
     let mut pulldown_options = Options::empty();
-    
+
     // Map our options to pulldown-cmark options
     if options.gfm || options.gfm_options.tables {
         pulldown_options.insert(Options::ENABLE_TABLES);
@@ -30,11 +30,11 @@ pub fn parse_with_pulldown(doc: &Document, options: ProcessorOptions) -> Node {
 
     let parser = Parser::new_ext(&doc.content, pulldown_options);
     let mut builder = AstBuilder::new(options);
-    
+
     for (event, range) in parser.into_offset_iter() {
         builder.handle_event(event, range, &doc.content);
     }
-    
+
     builder.finish()
 }
 
@@ -66,14 +66,14 @@ impl AstBuilder {
             content: Vec::new(),
         }
     }
-    
+
     fn handle_event(&mut self, event: Event, range: std::ops::Range<usize>, source: &str) {
         let position = if self.options.position {
             Some(self.range_to_position(range.clone(), source))
         } else {
             None
         };
-        
+
         match event {
             Event::Start(tag) => self.handle_start_tag(tag, position),
             Event::End(tag) => self.handle_end_tag(tag),
@@ -89,7 +89,7 @@ impl AstBuilder {
             _ => {} // Ignore other events for now
         }
     }
-    
+
     fn handle_start_tag(&mut self, tag: Tag, position: Option<Position>) {
         let node = match tag {
             Tag::Paragraph => Node {
@@ -171,33 +171,58 @@ impl AstBuilder {
                 position,
                 ..Default::default()
             },
-            Tag::Link { link_type, dest_url, title, .. } => Node {
+            Tag::Link {
+                link_type,
+                dest_url,
+                title,
+                ..
+            } => Node {
                 node_type: match link_type {
-                    LinkType::Inline | LinkType::Reference | LinkType::Collapsed | LinkType::Shortcut => NodeType::Link,
+                    LinkType::Inline
+                    | LinkType::Reference
+                    | LinkType::Collapsed
+                    | LinkType::Shortcut => NodeType::Link,
                     LinkType::Email => NodeType::Link,
                     LinkType::Autolink => NodeType::Link,
-                    LinkType::ReferenceUnknown | LinkType::CollapsedUnknown | LinkType::ShortcutUnknown => NodeType::LinkReference,
+                    LinkType::ReferenceUnknown
+                    | LinkType::CollapsedUnknown
+                    | LinkType::ShortcutUnknown => NodeType::LinkReference,
                 },
                 url: Some(dest_url.to_string()),
-                title: if title.is_empty() { None } else { Some(title.to_string()) },
+                title: if title.is_empty() {
+                    None
+                } else {
+                    Some(title.to_string())
+                },
                 position,
                 ..Default::default()
             },
-            Tag::Image { dest_url, title, .. } => Node {
+            Tag::Image {
+                dest_url, title, ..
+            } => Node {
                 node_type: NodeType::Image,
                 url: Some(dest_url.to_string()),
-                title: if title.is_empty() { None } else { Some(title.to_string()) },
+                title: if title.is_empty() {
+                    None
+                } else {
+                    Some(title.to_string())
+                },
                 position,
                 ..Default::default()
             },
             Tag::Table(alignment) => Node {
                 node_type: NodeType::Table,
-                align: Some(alignment.into_iter().map(|a| match a {
-                    pulldown_cmark::Alignment::None => "none".to_string(),
-                    pulldown_cmark::Alignment::Left => "left".to_string(),
-                    pulldown_cmark::Alignment::Center => "center".to_string(),
-                    pulldown_cmark::Alignment::Right => "right".to_string(),
-                }).collect()),
+                align: Some(
+                    alignment
+                        .into_iter()
+                        .map(|a| match a {
+                            pulldown_cmark::Alignment::None => "none".to_string(),
+                            pulldown_cmark::Alignment::Left => "left".to_string(),
+                            pulldown_cmark::Alignment::Center => "center".to_string(),
+                            pulldown_cmark::Alignment::Right => "right".to_string(),
+                        })
+                        .collect(),
+                ),
                 position,
                 ..Default::default()
             },
@@ -228,10 +253,10 @@ impl AstBuilder {
             },
             _ => return, // Skip other tags
         };
-        
+
         self.stack.push(node);
     }
-    
+
     fn handle_end_tag(&mut self, tag: TagEnd) {
         if let Some(mut node) = self.stack.pop() {
             // Handle special cases
@@ -262,7 +287,7 @@ impl AstBuilder {
                 }
                 _ => {}
             }
-            
+
             // Add to parent or root
             if let Some(parent) = self.stack.last_mut() {
                 parent.children.push(node);
@@ -271,16 +296,19 @@ impl AstBuilder {
             }
         }
     }
-    
+
     fn handle_text(&mut self, text: CowStr, position: Option<Position>) {
         // If we're in a code block or HTML block, collect the text
         if let Some(parent) = self.stack.last() {
-            if matches!(parent.node_type, NodeType::Code | NodeType::Html | NodeType::Yaml) {
+            if matches!(
+                parent.node_type,
+                NodeType::Code | NodeType::Html | NodeType::Yaml
+            ) {
                 self.content.push(text.to_string());
                 return;
             }
         }
-        
+
         // Otherwise create a text node
         let node = Node {
             node_type: NodeType::Text,
@@ -288,14 +316,14 @@ impl AstBuilder {
             position,
             ..Default::default()
         };
-        
+
         if let Some(parent) = self.stack.last_mut() {
             parent.children.push(node);
         } else {
             self.root.children.push(node);
         }
     }
-    
+
     fn handle_inline_code(&mut self, code: CowStr, position: Option<Position>) {
         let node = Node {
             node_type: NodeType::InlineCode,
@@ -303,14 +331,14 @@ impl AstBuilder {
             position,
             ..Default::default()
         };
-        
+
         if let Some(parent) = self.stack.last_mut() {
             parent.children.push(node);
         } else {
             self.root.children.push(node);
         }
     }
-    
+
     fn handle_html(&mut self, html: CowStr, position: Option<Position>) {
         // If we're in an HTML block, collect the content
         if let Some(parent) = self.stack.last() {
@@ -319,7 +347,7 @@ impl AstBuilder {
                 return;
             }
         }
-        
+
         // Otherwise create an inline HTML node
         let node = Node {
             node_type: NodeType::Html,
@@ -327,48 +355,48 @@ impl AstBuilder {
             position,
             ..Default::default()
         };
-        
+
         if let Some(parent) = self.stack.last_mut() {
             parent.children.push(node);
         } else {
             self.root.children.push(node);
         }
     }
-    
+
     fn handle_soft_break(&mut self, position: Option<Position>) {
         let node = Node {
             node_type: NodeType::Break,
             position,
             ..Default::default()
         };
-        
+
         if let Some(parent) = self.stack.last_mut() {
             parent.children.push(node);
         }
     }
-    
+
     fn handle_hard_break(&mut self, position: Option<Position>) {
         let node = Node {
             node_type: NodeType::Break,
             position,
             ..Default::default()
         };
-        
+
         if let Some(parent) = self.stack.last_mut() {
             parent.children.push(node);
         }
     }
-    
+
     fn handle_rule(&mut self, position: Option<Position>) {
         let node = Node {
             node_type: NodeType::ThematicBreak,
             position,
             ..Default::default()
         };
-        
+
         self.root.children.push(node);
     }
-    
+
     fn handle_task_list_marker(&mut self, checked: bool) {
         if let Some(parent) = self.stack.last_mut() {
             if parent.node_type == NodeType::ListItem {
@@ -376,7 +404,7 @@ impl AstBuilder {
             }
         }
     }
-    
+
     fn handle_inline_math(&mut self, math: CowStr, position: Option<Position>) {
         let node = Node {
             node_type: NodeType::InlineMath,
@@ -384,14 +412,14 @@ impl AstBuilder {
             position,
             ..Default::default()
         };
-        
+
         if let Some(parent) = self.stack.last_mut() {
             parent.children.push(node);
         } else {
             self.root.children.push(node);
         }
     }
-    
+
     fn handle_display_math(&mut self, math: CowStr, position: Option<Position>) {
         let node = Node {
             node_type: NodeType::Math,
@@ -399,10 +427,10 @@ impl AstBuilder {
             position,
             ..Default::default()
         };
-        
+
         self.root.children.push(node);
     }
-    
+
     fn heading_level_to_depth(&self, level: HeadingLevel) -> u8 {
         match level {
             HeadingLevel::H1 => 1,
@@ -413,16 +441,16 @@ impl AstBuilder {
             HeadingLevel::H6 => 6,
         }
     }
-    
+
     fn range_to_position(&self, range: std::ops::Range<usize>, source: &str) -> Position {
         let start_offset = range.start;
         let end_offset = range.end;
-        
+
         // Calculate line and column for start
         let mut line = 1;
         let mut column = 1;
         let mut current_offset = 0;
-        
+
         for ch in source.chars() {
             if current_offset >= start_offset {
                 break;
@@ -435,10 +463,10 @@ impl AstBuilder {
             }
             current_offset += ch.len_utf8();
         }
-        
+
         let start_line = line;
         let start_column = column;
-        
+
         // Continue for end position
         for ch in source[current_offset..].chars() {
             if current_offset >= end_offset {
@@ -452,7 +480,7 @@ impl AstBuilder {
             }
             current_offset += ch.len_utf8();
         }
-        
+
         Position {
             start: crate::position::Point {
                 line: start_line,
@@ -467,7 +495,7 @@ impl AstBuilder {
             source: None,
         }
     }
-    
+
     fn finish(self) -> Node {
         self.root
     }

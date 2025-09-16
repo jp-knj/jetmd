@@ -4,18 +4,18 @@ use serde::{Deserialize, Serialize};
 
 // Re-export main types
 pub use ast::*;
+pub use error::{ErrorCollector, ParseError, ParseErrorKind};
 pub use incremental::*;
 pub use position::*;
-pub use error::{ParseError, ParseErrorKind, ErrorCollector};
 
 pub mod ast;
+pub mod error;
 pub mod incremental;
 pub mod inline;
 pub mod parser_impl;
 pub mod position;
 pub mod rope;
 pub mod scanner;
-pub mod error;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Document {
@@ -119,14 +119,14 @@ impl IncrementalSession {
 // Main parsing functions
 pub fn parse(doc: &Document, options: ProcessorOptions) -> ParseResult {
     use parser_impl::parse_with_pulldown;
-    
+
     // Use web-sys for timing in WASM, std::time::Instant for native
     #[cfg(target_arch = "wasm32")]
     let start_time = web_sys::window()
         .and_then(|w| w.performance())
         .map(|p| p.now())
         .unwrap_or(0.0);
-    
+
     #[cfg(not(target_arch = "wasm32"))]
     let start_time = std::time::Instant::now();
 
@@ -137,7 +137,7 @@ pub fn parse(doc: &Document, options: ProcessorOptions) -> ParseResult {
     if doc.content.len() > 10 * 1024 * 1024 {
         let error = ParseError::new(
             ParseErrorKind::Custom("Document too large".to_string()),
-            "Document exceeds maximum size of 10MB"
+            "Document exceeds maximum size of 10MB",
         );
         error_collector.add_error(error);
         return ParseResult {
@@ -168,7 +168,7 @@ pub fn parse(doc: &Document, options: ProcessorOptions) -> ParseResult {
     if options.allow_dangerous_html {
         let warning = ParseError::new(
             ParseErrorKind::Custom("Dangerous HTML".to_string()),
-            "Dangerous HTML is allowed - ensure input is trusted"
+            "Dangerous HTML is allowed - ensure input is trusted",
         );
         error_collector.add_warning(warning);
         warnings.push("Dangerous HTML is allowed - ensure input is trusted".to_string());
@@ -243,7 +243,7 @@ pub fn parse_incremental(
     let mut reused_nodes = 0;
 
     // Calculate diff to find unchanged sections (would compare with previous content)
-    let diff = calculate_diff(&doc.content, &doc.content); 
+    let diff = calculate_diff(&doc.content, &doc.content);
 
     // Try to reuse nodes from cache
     let content_hash = content_hash(&doc.content);

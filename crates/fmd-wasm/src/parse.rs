@@ -11,7 +11,7 @@ pub fn parse_to_ast(content: &str, options: JsValue) -> Result<JsValue, JsValue>
     } else {
         from_value(options).map_err(|e| JsValue::from_str(&format!("Invalid options: {}", e)))?
     };
-    
+
     // Enable all GFM features when gfm is true
     if opts.gfm {
         opts.gfm_options.tables = true;
@@ -53,7 +53,8 @@ pub fn parse_with_positions(content: &str, options: JsValue) -> Result<JsValue, 
     let doc = Document::new(content);
     let result = fmd_core::parse(&doc, opts);
 
-    serde_wasm_bindgen::to_value(&result).map_err(|e| JsValue::from_str(&format!("Serialization error: {}", e)))
+    serde_wasm_bindgen::to_value(&result)
+        .map_err(|e| JsValue::from_str(&format!("Serialization error: {}", e)))
 }
 
 /// Get parsing statistics
@@ -71,7 +72,8 @@ pub fn get_parse_stats(content: &str) -> Result<JsValue, JsValue> {
         "lineCount": content.lines().count(),
     });
 
-    serde_wasm_bindgen::to_value(&stats).map_err(|e| JsValue::from_str(&format!("Statistics error: {}", e)))
+    serde_wasm_bindgen::to_value(&stats)
+        .map_err(|e| JsValue::from_str(&format!("Statistics error: {}", e)))
 }
 
 fn count_nodes(node: &Node) -> usize {

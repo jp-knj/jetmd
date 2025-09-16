@@ -29,7 +29,7 @@ pub fn render_html(content: &str, options: JsValue) -> Result<String, JsValue> {
 
     // Parse the document
     let doc = Document::new(content);
-    
+
     let parse_result = fmd_core::parse(&doc, processor_opts);
 
     if !parse_result.success {
@@ -124,5 +124,6 @@ pub fn get_render_stats(content: &str) -> Result<JsValue, JsValue> {
         "compressionRatio": html.len() as f64 / content.len() as f64,
     });
 
-    serde_wasm_bindgen::to_value(&stats).map_err(|e| JsValue::from_str(&format!("Statistics error: {}", e)))
+    serde_wasm_bindgen::to_value(&stats)
+        .map_err(|e| JsValue::from_str(&format!("Statistics error: {}", e)))
 }

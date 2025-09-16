@@ -1,9 +1,9 @@
 // Render wrapper for faster-md
 // Wraps the WASM renderHtml function with JavaScript-friendly interface
 
+// Cache functions available but not currently used in this module
 import { getWasmInstance } from './loader.js'
 import { parse } from './parse.js'
-import { getCached, setCached, clearCache, getCacheStats } from './cache.js'
 
 /**
  * HTML render options

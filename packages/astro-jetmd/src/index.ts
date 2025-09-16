@@ -1,36 +1,36 @@
-import type { AstroIntegration, AstroConfig } from 'astro';
-import type { VitePlugin } from 'vite';
-import { renderHtml, parse } from 'faster-md';
+import type { AstroIntegration } from 'astro'
+import { renderHtml } from 'faster-md'
+import type { VitePlugin } from 'vite'
 
 export interface AstroJetMDOptions {
   /**
    * Enable GitHub Flavored Markdown
    * @default true
    */
-  gfm?: boolean;
-  
+  gfm?: boolean
+
   /**
    * Enable HTML sanitization
    * @default true
    */
-  sanitize?: boolean;
-  
+  sanitize?: boolean
+
   /**
    * Enable MDX support (future)
    * @default false
    */
-  mdx?: boolean;
-  
+  mdx?: boolean
+
   /**
    * Custom renderer functions
    */
-  renderers?: Record<string, (node: any) => string>;
-  
+  renderers?: Record<string, (node: unknown) => string>
+
   /**
    * Enable incremental parsing for dev mode
    * @default true
    */
-  incremental?: boolean;
+  incremental?: boolean
 }
 
 /**
@@ -43,41 +43,41 @@ export default function astroJetMD(options: AstroJetMDOptions = {}): AstroIntegr
     sanitize: true,
     mdx: false,
     incremental: true,
-    ...options
-  };
+    ...options,
+  }
 
   return {
     name: 'astro-jetmd',
     hooks: {
-      'astro:config:setup': ({ config: astroConfig, command, updateConfig }) => {
-        console.log('⚡ JetMD: Initializing high-performance Markdown processor');
-        
+      'astro:config:setup': ({ updateConfig }) => {
+        console.log('⚡ JetMD: Initializing high-performance Markdown processor')
+
         // Viteプラグインを追加
         updateConfig({
           vite: {
-            plugins: [jetMDVitePlugin(config)]
+            plugins: [jetMDVitePlugin(config)],
           },
           markdown: {
             // Astroの内蔵Markdownプロセッサーを無効化
             // JetMDで処理
-            render: undefined
-          }
-        });
+            render: undefined,
+          },
+        })
       },
-      
-      'astro:config:done': ({ config: astroConfig }) => {
-        console.log('✅ JetMD: Configuration complete');
+
+      'astro:config:done': () => {
+        console.log('✅ JetMD: Configuration complete')
       },
-      
+
       'astro:build:start': async () => {
-        console.log('🏗️  JetMD: Starting build process');
+        console.log('🏗️  JetMD: Starting build process')
       },
-      
+
       'astro:build:done': async ({ pages }) => {
-        console.log(`✨ JetMD: Built ${pages.length} pages`);
-      }
-    }
-  };
+        console.log(`✨ JetMD: Built ${pages.length} pages`)
+      },
+    },
+  }
 }
 
 /**
@@ -86,88 +86,91 @@ export default function astroJetMD(options: AstroJetMDOptions = {}): AstroIntegr
 function jetMDVitePlugin(options: AstroJetMDOptions): VitePlugin {
   return {
     name: 'vite-plugin-jetmd',
-    
+
     async transform(code: string, id: string) {
       // .mdファイルを処理
       if (id.endsWith('.md')) {
         try {
-          const start = performance.now();
-          
+          const start = performance.now()
+
           // フロントマターを抽出
-          const { content, frontmatter } = extractFrontmatter(code);
-          
+          const { content, frontmatter } = extractFrontmatter(code)
+
           // JetMDでHTMLに変換
           const html = await renderHtml(content, {
             gfm: options.gfm,
-            sanitize: options.sanitize
-          });
-          
-          const elapsed = performance.now() - start;
-          
+            sanitize: options.sanitize,
+          })
+
+          const elapsed = performance.now() - start
+
           // Astro用のコンポーネントとして出力
-          const component = generateAstroComponent(html, frontmatter);
-          
+          const component = generateAstroComponent(html, frontmatter)
+
           // デバッグ情報
           if (process.env.NODE_ENV === 'development') {
-            console.log(`  📄 ${id.split('/').pop()}: ${elapsed.toFixed(2)}ms`);
+            console.log(`  📄 ${id.split('/').pop()}: ${elapsed.toFixed(2)}ms`)
           }
-          
+
           return {
             code: component,
-            map: null
-          };
+            map: null,
+          }
         } catch (error) {
-          console.error(`JetMD Error processing ${id}:`, error);
-          throw error;
+          console.error(`JetMD Error processing ${id}:`, error)
+          throw error
         }
       }
-      
+
       // .mdxファイルのサポート（将来）
       if (id.endsWith('.mdx') && options.mdx) {
         // MDX処理（未実装）
-        console.warn('MDX support is not yet implemented');
+        console.warn('MDX support is not yet implemented')
       }
-      
-      return null;
-    }
-  };
+
+      return null
+    },
+  }
 }
 
 /**
  * フロントマターを抽出
  */
-function extractFrontmatter(content: string): { content: string; frontmatter: any } {
-  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n/;
-  const match = content.match(frontmatterRegex);
-  
+function extractFrontmatter(content: string): {
+  content: string
+  frontmatter: Record<string, unknown>
+} {
+  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n/
+  const match = content.match(frontmatterRegex)
+
   if (match) {
-    const frontmatterContent = match[1];
-    const mainContent = content.slice(match[0].length);
-    
+    const frontmatterContent = match[1]
+    const mainContent = content.slice(match[0].length)
+
     // 簡易的なYAMLパース（実際のプロジェクトではyamlライブラリを使用）
-    const frontmatter: any = {};
-    frontmatterContent.split('\n').forEach(line => {
-      const [key, ...valueParts] = line.split(':');
+    const frontmatter: Record<string, unknown> = {}
+    for (const line of frontmatterContent.split('\n')) {
+      const [key, ...valueParts] = line.split(':')
       if (key && valueParts.length) {
-        const value = valueParts.join(':').trim();
-        frontmatter[key.trim()] = value.replace(/^["']|["']$/g, '');
+        const value = valueParts.join(':').trim()
+        frontmatter[key.trim()] = value.replace(/^["']|["']$/g, '')
       }
-    });
-    
-    return { content: mainContent, frontmatter };
+    }
+
+    return { content: mainContent, frontmatter }
   }
-  
-  return { content, frontmatter: {} };
+
+  return { content, frontmatter: {} }
 }
 
 /**
  * Astroコンポーネントを生成
  */
-function generateAstroComponent(html: string, frontmatter: any): string {
+function generateAstroComponent(html: string, frontmatter: Record<string, unknown>): string {
   const exportStatements = Object.entries(frontmatter)
     .map(([key, value]) => `export const ${key} = ${JSON.stringify(value)};`)
-    .join('\n');
-  
+    .join('\n')
+
   return `
 ${exportStatements}
 
@@ -181,8 +184,8 @@ export function getHeadings() {
   // ヘッディング抽出（必要に応じて実装）
   return [];
 }
-`;
+`
 }
 
 // TypeScript型定義のエクスポート
-export type { AstroIntegration };
+export type { AstroIntegration }

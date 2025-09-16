@@ -1,39 +1,39 @@
 #!/usr/bin/env node
 
 // 実践的なテスト - Real-world usage test
-import { readFile, writeFile, readdir } from 'node:fs/promises';
-import { join, basename, extname } from 'node:path';
-import { performance } from 'node:perf_hooks';
-import { renderHtml, parse } from '../packages/faster-md/dist/index.js';
+import { readFile, readdir, writeFile } from 'node:fs/promises'
+import { basename, join } from 'node:path'
+import { performance } from 'node:perf_hooks'
+import { renderHtml } from '../packages/faster-md/dist/index.js'
 
 // 実際のMarkdownファイルを処理してHTMLに変換
 async function convertMarkdownFile(filePath) {
-  console.log(`\n📄 Processing: ${basename(filePath)}`);
-  
+  console.log(`\n📄 Processing: ${basename(filePath)}`)
+
   try {
-    const markdown = await readFile(filePath, 'utf-8');
-    const fileSize = (markdown.length / 1024).toFixed(2);
-    console.log(`   Size: ${fileSize} KB`);
-    
+    const markdown = await readFile(filePath, 'utf-8')
+    const fileSize = (markdown.length / 1024).toFixed(2)
+    console.log(`   Size: ${fileSize} KB`)
+
     // パフォーマンス測定
-    const start = performance.now();
-    const html = await renderHtml(markdown, { 
+    const start = performance.now()
+    const html = await renderHtml(markdown, {
       gfm: true,
-      sanitize: true 
-    });
-    const elapsed = performance.now() - start;
-    
+      sanitize: true,
+    })
+    const elapsed = performance.now() - start
+
     // 結果を保存
-    const outputPath = filePath.replace(/\.md$/i, '.html');
-    await writeFile(outputPath, wrapHtml(html, basename(filePath)));
-    
-    console.log(`   ✅ Converted in ${elapsed.toFixed(2)}ms`);
-    console.log(`   📁 Output: ${basename(outputPath)}`);
-    
-    return { success: true, elapsed, size: markdown.length };
+    const outputPath = filePath.replace(/\.md$/i, '.html')
+    await writeFile(outputPath, wrapHtml(html, basename(filePath)))
+
+    console.log(`   ✅ Converted in ${elapsed.toFixed(2)}ms`)
+    console.log(`   📁 Output: ${basename(outputPath)}`)
+
+    return { success: true, elapsed, size: markdown.length }
   } catch (error) {
-    console.log(`   ❌ Error: ${error.message}`);
-    return { success: false, error: error.message };
+    console.log(`   ❌ Error: ${error.message}`)
+    return { success: false, error: error.message }
   }
 }
 
@@ -96,13 +96,13 @@ function wrapHtml(content, title) {
 <body>
 ${content}
 </body>
-</html>`;
+</html>`
 }
 
 // サンプルMarkdownファイルを作成
 async function createSampleFiles() {
-  console.log('Creating sample markdown files...\n');
-  
+  console.log('Creating sample markdown files...\n')
+
   const samples = {
     'README.md': `# JetMD - 高速Markdownプロセッサー
 
@@ -288,21 +288,21 @@ Document Size | Throughput | Latency (p50) | Memory
 
 ---
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)`
-  };
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)`,
+  }
 
   for (const [filename, content] of Object.entries(samples)) {
-    const filePath = join('demo', filename);
-    await writeFile(filePath, content);
-    console.log(`✅ Created: ${filename}`);
+    const filePath = join('demo', filename)
+    await writeFile(filePath, content)
+    console.log(`✅ Created: ${filename}`)
   }
 }
 
 // 比較テスト
 async function comparePerformance() {
-  console.log('\n' + '='.repeat(60));
-  console.log('PERFORMANCE COMPARISON');
-  console.log('='.repeat(60));
+  console.log(`\n${'='.repeat(60)}`)
+  console.log('PERFORMANCE COMPARISON')
+  console.log('='.repeat(60))
 
   const testDoc = `# Benchmark Document
 
@@ -323,30 +323,30 @@ ${'- List item\n'.repeat(20)}
 | Column A | Column B | Column C |
 |----------|----------|----------|
 ${'| Data | Data | Data |\n'.repeat(10)}
-`;
+`
 
-  console.log(`\nDocument size: ${(testDoc.length / 1024).toFixed(2)} KB`);
+  console.log(`\nDocument size: ${(testDoc.length / 1024).toFixed(2)} KB`)
 
   // Our implementation
-  console.log('\n📦 faster-md (Our implementation):');
-  const iterations = 100;
-  
+  console.log('\n📦 faster-md (Our implementation):')
+  const iterations = 100
+
   // Warm up
   for (let i = 0; i < 10; i++) {
-    await renderHtml(testDoc, { gfm: true });
+    await renderHtml(testDoc, { gfm: true })
   }
 
-  const start = performance.now();
+  const start = performance.now()
   for (let i = 0; i < iterations; i++) {
-    await renderHtml(testDoc, { gfm: true });
+    await renderHtml(testDoc, { gfm: true })
   }
-  const ourTime = performance.now() - start;
-  const ourAvg = ourTime / iterations;
-  const ourThroughput = (testDoc.length * iterations) / (ourTime / 1000) / 1024 / 1024;
+  const ourTime = performance.now() - start
+  const ourAvg = ourTime / iterations
+  const ourThroughput = (testDoc.length * iterations) / (ourTime / 1000) / 1024 / 1024
 
-  console.log(`  Average: ${ourAvg.toFixed(2)}ms`);
-  console.log(`  Throughput: ${ourThroughput.toFixed(2)} MB/s`);
-  console.log(`  Total: ${ourTime.toFixed(2)}ms for ${iterations} iterations`);
+  console.log(`  Average: ${ourAvg.toFixed(2)}ms`)
+  console.log(`  Throughput: ${ourThroughput.toFixed(2)} MB/s`)
+  console.log(`  Total: ${ourTime.toFixed(2)}ms for ${iterations} iterations`)
 
   // You could add comparisons with other libraries here
   // For example: marked, markdown-it, remark, etc.
@@ -354,49 +354,49 @@ ${'| Data | Data | Data |\n'.repeat(10)}
 
 // メイン処理
 async function main() {
-  console.log('🚀 JetMD Real-World Test\n');
-  console.log('Testing practical usage scenarios...\n');
+  console.log('🚀 JetMD Real-World Test\n')
+  console.log('Testing practical usage scenarios...\n')
 
   // サンプルファイルを作成
-  await createSampleFiles();
+  await createSampleFiles()
 
   // Markdownファイルを処理
-  console.log('\n' + '='.repeat(60));
-  console.log('CONVERTING MARKDOWN FILES');
-  console.log('='.repeat(60));
+  console.log(`\n${'='.repeat(60)}`)
+  console.log('CONVERTING MARKDOWN FILES')
+  console.log('='.repeat(60))
 
-  const files = await readdir('demo');
-  const mdFiles = files.filter(f => f.endsWith('.md'));
-  
-  const results = [];
+  const files = await readdir('demo')
+  const mdFiles = files.filter((f) => f.endsWith('.md'))
+
+  const results = []
   for (const file of mdFiles) {
-    const result = await convertMarkdownFile(join('demo', file));
-    results.push(result);
+    const result = await convertMarkdownFile(join('demo', file))
+    results.push(result)
   }
 
   // 結果のサマリー
-  console.log('\n' + '='.repeat(60));
-  console.log('SUMMARY');
-  console.log('='.repeat(60));
+  console.log(`\n${'='.repeat(60)}`)
+  console.log('SUMMARY')
+  console.log('='.repeat(60))
 
-  const successful = results.filter(r => r.success);
-  const totalTime = successful.reduce((sum, r) => sum + r.elapsed, 0);
-  const totalSize = successful.reduce((sum, r) => sum + r.size, 0);
+  const successful = results.filter((r) => r.success)
+  const totalTime = successful.reduce((sum, r) => sum + r.elapsed, 0)
+  const totalSize = successful.reduce((sum, r) => sum + r.size, 0)
 
-  console.log(`\n✅ Converted: ${successful.length}/${results.length} files`);
-  console.log(`📊 Total time: ${totalTime.toFixed(2)}ms`);
-  console.log(`📦 Total size: ${(totalSize / 1024).toFixed(2)} KB`);
-  console.log(`⚡ Average speed: ${(totalSize / (totalTime / 1000) / 1024 / 1024).toFixed(2)} MB/s`);
+  console.log(`\n✅ Converted: ${successful.length}/${results.length} files`)
+  console.log(`📊 Total time: ${totalTime.toFixed(2)}ms`)
+  console.log(`📦 Total size: ${(totalSize / 1024).toFixed(2)} KB`)
+  console.log(`⚡ Average speed: ${(totalSize / (totalTime / 1000) / 1024 / 1024).toFixed(2)} MB/s`)
 
   // パフォーマンス比較
-  await comparePerformance();
+  await comparePerformance()
 
-  console.log('\n✨ Test complete! Check the demo/*.html files to see the results.');
-  console.log('💡 You can open them in a browser to verify the rendering quality.');
+  console.log('\n✨ Test complete! Check the demo/*.html files to see the results.')
+  console.log('💡 You can open them in a browser to verify the rendering quality.')
 }
 
 // エラーハンドリング
-main().catch(error => {
-  console.error('❌ Test failed:', error);
-  process.exit(1);
-});
+main().catch((error) => {
+  console.error('❌ Test failed:', error)
+  process.exit(1)
+})

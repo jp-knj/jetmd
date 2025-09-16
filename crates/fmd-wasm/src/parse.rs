@@ -1,19 +1,29 @@
 // WASM parsing module
 use fmd_core::{Document, Node, ProcessorOptions};
-use serde_wasm_bindgen::{from_value, to_value};
+use serde_wasm_bindgen::from_value;
 use wasm_bindgen::prelude::*;
 
 /// Parse Markdown to AST
 #[wasm_bindgen(js_name = parseToAst)]
 pub fn parse_to_ast(content: &str, options: JsValue) -> Result<JsValue, JsValue> {
-    let opts: ProcessorOptions = if options.is_undefined() || options.is_null() {
+    let mut opts: ProcessorOptions = if options.is_undefined() || options.is_null() {
         ProcessorOptions::default()
     } else {
         from_value(options).map_err(|e| JsValue::from_str(&format!("Invalid options: {}", e)))?
     };
+    
+    // Enable all GFM features when gfm is true
+    if opts.gfm {
+        opts.gfm_options.tables = true;
+        opts.gfm_options.strikethrough = true;
+        opts.gfm_options.autolinks = true;
+        opts.gfm_options.tasklists = true;
+    }
 
     let doc = Document::new(content);
     let result = fmd_core::parse(&doc, opts);
+
+    // Debug logging disabled for production
 
     // Return full parse result with AST and metadata
     let js_result = serde_json::json!({
@@ -24,7 +34,8 @@ pub fn parse_to_ast(content: &str, options: JsValue) -> Result<JsValue, JsValue>
         "nodeCount": count_nodes(&result.ast),
     });
 
-    to_value(&js_result).map_err(|e| JsValue::from_str(&format!("Serialization error: {}", e)))
+    // Convert to JSON string then parse in JavaScript
+    Ok(JsValue::from_str(&js_result.to_string()))
 }
 
 /// Parse with position information
@@ -42,7 +53,7 @@ pub fn parse_with_positions(content: &str, options: JsValue) -> Result<JsValue, 
     let doc = Document::new(content);
     let result = fmd_core::parse(&doc, opts);
 
-    to_value(&result).map_err(|e| JsValue::from_str(&format!("Serialization error: {}", e)))
+    serde_wasm_bindgen::to_value(&result).map_err(|e| JsValue::from_str(&format!("Serialization error: {}", e)))
 }
 
 /// Get parsing statistics
@@ -60,7 +71,7 @@ pub fn get_parse_stats(content: &str) -> Result<JsValue, JsValue> {
         "lineCount": content.lines().count(),
     });
 
-    to_value(&stats).map_err(|e| JsValue::from_str(&format!("Statistics error: {}", e)))
+    serde_wasm_bindgen::to_value(&stats).map_err(|e| JsValue::from_str(&format!("Statistics error: {}", e)))
 }
 
 fn count_nodes(node: &Node) -> usize {

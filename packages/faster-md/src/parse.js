@@ -27,13 +27,14 @@ export async function parse(markdown, options = {}) {
   const wasm = await getWasmInstance()
 
   try {
-    // Call the WASM parseToAst function
-    const astJson = wasm.parseToAst(markdown, JSON.stringify(options))
+    // Call the WASM parseToAst function - pass options object directly
+    const resultJson = wasm.parseToAst(markdown, options)
+    
+    // Parse the JSON string returned by WASM
+    const result = typeof resultJson === 'string' ? JSON.parse(resultJson) : resultJson
 
-    // Parse the JSON result
-    const ast = JSON.parse(astJson)
-
-    return ast
+    // Return the result or just the AST if requested
+    return result
   } catch (error) {
     // Enhance error with context
     const enhancedError = new Error(`Parse error: ${error.message}`)
@@ -62,8 +63,10 @@ export function parseSync(markdown, options = {}) {
   }
 
   try {
-    const astJson = wasm.parseToAst(markdown, JSON.stringify(options))
-    return JSON.parse(astJson)
+    // Pass options object directly
+    const resultJson = wasm.parseToAst(markdown, options)
+    // Parse the JSON string if needed
+    return typeof resultJson === 'string' ? JSON.parse(resultJson) : resultJson
   } catch (error) {
     const enhancedError = new Error(`Parse error: ${error.message}`)
     enhancedError.originalError = error

@@ -1,6 +1,6 @@
 // Block scanner with optimization for faster-md
 
-use crate::ast::{Point, Position};
+use crate::position::{Point, Position};
 
 pub struct Scanner<'a> {
     input: &'a str,

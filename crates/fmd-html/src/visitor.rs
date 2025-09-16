@@ -318,6 +318,25 @@ impl HtmlVisitor {
                 }
                 self.output.push_str("</div>");
             }
+            // Math
+            NodeType::Math => {
+                self.output.push_str("<div class=\"math math-display\">");
+                if let Some(value) = &node.value {
+                    self.output.push_str(&escape_html(value));
+                }
+                self.output.push_str("</div>\n");
+            }
+            NodeType::InlineMath => {
+                self.output.push_str("<span class=\"math math-inline\">");
+                if let Some(value) = &node.value {
+                    self.output.push_str(&escape_html(value));
+                }
+                self.output.push_str("</span>");
+            }
+            // YAML frontmatter (typically not rendered in HTML)
+            NodeType::Yaml | NodeType::FrontMatter => {
+                // Skip rendering frontmatter in HTML output
+            }
             _ => {
                 // Fallback for unhandled types
                 for child in &node.children {

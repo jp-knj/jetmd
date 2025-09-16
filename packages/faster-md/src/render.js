@@ -27,7 +27,8 @@ export async function renderHtml(input, options = {}) {
   try {
     // If input is a string, use direct renderHtml
     if (typeof input === 'string') {
-      const html = wasm.renderHtml(input, JSON.stringify(options))
+      // Pass options object directly, not JSON string
+      const html = wasm.renderHtml(input, options)
       return html
     }
 
@@ -66,7 +67,8 @@ export function renderHtmlSync(input, options = {}) {
 
   try {
     if (typeof input === 'string') {
-      return wasm.renderHtml(input, JSON.stringify(options))
+      // Pass options object directly, not JSON string  
+      return wasm.renderHtml(input, options)
     }
 
     if (typeof input === 'object' && input !== null) {

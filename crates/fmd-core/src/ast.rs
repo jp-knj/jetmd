@@ -1,5 +1,6 @@
 // AST node types for faster-md
 
+use crate::position::Position;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
@@ -18,7 +19,7 @@ pub struct Node {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub position: Option<Position>,
 
-    #[serde(skip_serializing_if = "HashMap::is_empty")]
+    #[serde(skip_serializing_if = "HashMap::is_empty", default)]
     pub data: HashMap<String, Value>,
 
     // Specific fields for certain node types
@@ -48,6 +49,12 @@ pub struct Node {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub identifier: Option<String>,
+    
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start: Option<u64>,
+    
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub align: Option<Vec<String>>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
@@ -99,19 +106,11 @@ pub enum NodeType {
     ContainerDirective,
     LeafDirective,
     TextDirective,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Position {
-    pub start: Point,
-    pub end: Point,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Point {
-    pub line: usize,
-    pub column: usize,
-    pub offset: usize,
+    
+    // Math
+    Math,
+    InlineMath,
+    
+    // YAML
+    Yaml,
 }

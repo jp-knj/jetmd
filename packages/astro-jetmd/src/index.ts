@@ -1,6 +1,6 @@
 import type { AstroIntegration } from 'astro'
 import { renderHtml } from 'faster-md'
-import type { VitePlugin } from 'vite'
+import type { Plugin as VitePlugin } from 'vite'
 
 export interface AstroJetMDOptions {
   /**
@@ -56,11 +56,6 @@ export default function astroJetMD(options: AstroJetMDOptions = {}): AstroIntegr
         updateConfig({
           vite: {
             plugins: [jetMDVitePlugin(config)],
-          },
-          markdown: {
-            // Astroの内蔵Markdownプロセッサーを無効化
-            // JetMDで処理
-            render: undefined,
           },
         })
       },

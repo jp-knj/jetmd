@@ -92,9 +92,9 @@ export function frontmatterPlugin(options = {}) {
       ast.children.unshift(frontmatterNode)
 
       // Process frontmatter directives
-      ast = processFrontmatterDirectives(ast, frontmatter)
+      const processedAst = processFrontmatterDirectives(ast, frontmatter)
 
-      return ast
+      return processedAst
     })
     .compiler((ast, processor) => {
       // Frontmatter doesn't render to HTML by default

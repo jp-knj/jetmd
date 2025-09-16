@@ -142,7 +142,7 @@ function highlightCodeBlock(node, options) {
  * Highlight inline code
  */
 function highlightInlineCode(node, options) {
-  const { highlighter, theme, defaultLanguage, languageAliases } = options
+  const { highlighter, theme, defaultLanguage } = options
 
   // Try to detect language from context or use default
   const language = detectInlineLanguage(node) || defaultLanguage

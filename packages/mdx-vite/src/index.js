@@ -3,7 +3,6 @@
 
 import { createFilter } from '@rollup/pluginutils'
 import { compileMdx } from 'mdx-compiler'
-import { SourceMapGenerator } from 'source-map'
 
 /**
  * MDX Vite plugin options
@@ -188,31 +187,6 @@ if (import.meta.hot) {
     }
   })
 }`.trim()
-}
-
-/**
- * Create source map from MDX to original file
- */
-function createSourceMap(filename, source, generated) {
-  const generator = new SourceMapGenerator({
-    file: filename,
-    sourceRoot: '',
-  })
-
-  // Simple line-by-line mapping
-  const sourceLines = source.split('\n')
-  const generatedLines = generated.split('\n')
-
-  for (let i = 0; i < Math.min(sourceLines.length, generatedLines.length); i++) {
-    generator.addMapping({
-      source: filename,
-      original: { line: i + 1, column: 0 },
-      generated: { line: i + 1, column: 0 },
-    })
-  }
-
-  generator.setSourceContent(filename, source)
-  return generator.toString()
 }
 
 /**

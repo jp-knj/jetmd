@@ -92,14 +92,14 @@ function processFootnotes(markdown) {
 
   // Find footnote references [^1]
   let refCounter = 0
-  markdown = markdown.replace(/\[\^([^\]]+)\]/g, (_match, id) => {
+  const processedMarkdown = markdown.replace(/\[\^([^\]]+)\]/g, (_match, id) => {
     refCounter++
     footnoteRefs.set(id, refCounter)
     return `[^${refCounter}]`
   })
 
   // Find footnote definitions
-  const lines = markdown.split('\n')
+  const lines = processedMarkdown.split('\n')
   const processedLines = []
   let inFootnote = false
   let currentFootnote = null
@@ -148,33 +148,35 @@ function transformGfmAst(ast, options) {
   const walk = (node) => {
     if (!node) return node
 
+    let transformedNode = node
+
     // Transform based on node type
     switch (node.type) {
       case 'paragraph':
-        node = transformParagraph(node, options)
+        transformedNode = transformParagraph(node, options)
         break
 
       case 'list':
-        node = transformList(node, options)
+        transformedNode = transformList(node, options)
         break
 
       case 'text':
-        node = transformText(node, options)
+        transformedNode = transformText(node, options)
         break
 
       case 'html':
         if (options.tagFilter) {
-          node = filterHtmlTags(node)
+          transformedNode = filterHtmlTags(node)
         }
         break
     }
 
     // Recursively transform children
-    if (node.children && Array.isArray(node.children)) {
-      node.children = node.children.map(walk)
+    if (transformedNode.children && Array.isArray(transformedNode.children)) {
+      transformedNode.children = transformedNode.children.map(walk)
     }
 
-    return node
+    return transformedNode
   }
 
   return walk(ast)
@@ -218,9 +220,9 @@ function processStrikethrough(text) {
   const parts = []
   const regex = /~~([^~]+)~~/g
   let lastIndex = 0
-  let match
+  let match = regex.exec(text)
 
-  while ((match = regex.exec(text)) !== null) {
+  while (match !== null) {
     // Add text before strikethrough
     if (match.index > lastIndex) {
       parts.push({
@@ -241,6 +243,7 @@ function processStrikethrough(text) {
     })
 
     lastIndex = regex.lastIndex
+    match = regex.exec(text)
   }
 
   // Add remaining text
@@ -268,24 +271,27 @@ function processAutolinks(text) {
   const matches = []
 
   // Find all URLs
-  let match
-  while ((match = urlRegex.exec(text)) !== null) {
+  let match = urlRegex.exec(text)
+  while (match !== null) {
     matches.push({
       index: match.index,
       length: match[0].length,
       type: 'url',
       value: match[0],
     })
+    match = urlRegex.exec(text)
   }
 
   // Find all emails
-  while ((match = emailRegex.exec(text)) !== null) {
+  match = emailRegex.exec(text)
+  while (match !== null) {
     matches.push({
       index: match.index,
       length: match[0].length,
       type: 'email',
       value: match[0],
     })
+    match = emailRegex.exec(text)
   }
 
   // Sort matches by index

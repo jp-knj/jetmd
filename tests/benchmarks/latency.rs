@@ -1,6 +1,10 @@
 // Latency Benchmark
 // Target: <3ms p50 for 50KB documents
 
+#![allow(clippy::field_reassign_with_default)]
+#![allow(clippy::clone_on_copy)]
+#![allow(clippy::useless_vec)]
+
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 use fmd_core::{parse, Document, ProcessorOptions};
 use std::time::Duration;

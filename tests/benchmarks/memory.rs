@@ -1,6 +1,10 @@
 // Memory Profiling Benchmark
 // Target: ≤1.5× input memory usage
 
+#![allow(clippy::field_reassign_with_default)]
+#![allow(clippy::clone_on_copy)]
+#![allow(clippy::useless_vec)]
+
 use fmd_core::{parse, Document, ProcessorOptions};
 use std::alloc::{GlobalAlloc, Layout, System};
 use std::sync::atomic::{AtomicUsize, Ordering};

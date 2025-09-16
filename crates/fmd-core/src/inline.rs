@@ -1,6 +1,7 @@
 // Inline parser for faster-md
 
-use crate::ast::{Node, NodeType, Point, Position};
+use crate::ast::{Node, NodeType};
+use crate::position::{Point, Position};
 use std::collections::HashMap;
 
 pub struct InlineParser {

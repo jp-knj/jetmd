@@ -1,6 +1,7 @@
 // Render wrapper for faster-md
 // Wraps the WASM renderHtml function with JavaScript-friendly interface
 
+// Cache functions available but not currently used in this module
 import { getWasmInstance } from './loader.js'
 import { parse } from './parse.js'
 
@@ -22,12 +23,23 @@ import { parse } from './parse.js'
  * @returns {Promise<string>} The rendered HTML
  */
 export async function renderHtml(input, options = {}) {
+  // Check cache for string inputs
+  if (typeof input === 'string') {
+    const cached = getCached(input, options)
+    if (cached) {
+      return cached
+    }
+  }
+
   const wasm = await getWasmInstance()
 
   try {
     // If input is a string, use direct renderHtml
     if (typeof input === 'string') {
-      const html = wasm.renderHtml(input, JSON.stringify(options))
+      // Pass options object directly, not JSON string
+      const html = wasm.renderHtml(input, options)
+      // Cache the result
+      setCached(input, options, html)
       return html
     }
 
@@ -66,7 +78,8 @@ export function renderHtmlSync(input, options = {}) {
 
   try {
     if (typeof input === 'string') {
-      return wasm.renderHtml(input, JSON.stringify(options))
+      // Pass options object directly, not JSON string
+      return wasm.renderHtml(input, options)
     }
 
     if (typeof input === 'object' && input !== null) {

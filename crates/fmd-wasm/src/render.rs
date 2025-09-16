@@ -1,7 +1,7 @@
 // WASM HTML rendering module
 use fmd_core::{Document, ProcessorOptions};
 use fmd_html::{render_html as fmd_render_html, sanitize::SanitizeOptions, HtmlOptions};
-use serde_wasm_bindgen::{from_value, to_value};
+use serde_wasm_bindgen::from_value;
 use wasm_bindgen::prelude::*;
 
 /// Render Markdown to HTML
@@ -18,10 +18,18 @@ pub fn render_html(content: &str, options: JsValue) -> Result<String, JsValue> {
     let mut processor_opts = ProcessorOptions::default();
     if let Some(gfm) = js_opts.get("gfm").and_then(|v| v.as_bool()) {
         processor_opts.gfm = gfm;
+        // Enable all GFM features when gfm is true
+        if gfm {
+            processor_opts.gfm_options.tables = true;
+            processor_opts.gfm_options.strikethrough = true;
+            processor_opts.gfm_options.autolinks = true;
+            processor_opts.gfm_options.tasklists = true;
+        }
     }
 
     // Parse the document
     let doc = Document::new(content);
+
     let parse_result = fmd_core::parse(&doc, processor_opts);
 
     if !parse_result.success {
@@ -116,5 +124,6 @@ pub fn get_render_stats(content: &str) -> Result<JsValue, JsValue> {
         "compressionRatio": html.len() as f64 / content.len() as f64,
     });
 
-    to_value(&stats).map_err(|e| JsValue::from_str(&format!("Statistics error: {}", e)))
+    serde_wasm_bindgen::to_value(&stats)
+        .map_err(|e| JsValue::from_str(&format!("Statistics error: {}", e)))
 }

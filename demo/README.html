@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>README.md</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 1rem;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    code {
+      background: #f4f4f4;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+    }
+    blockquote {
+      border-left: 4px solid #ddd;
+      margin: 0;
+      padding-left: 1rem;
+      color: #666;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1rem 0;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 0.5rem;
+      text-align: left;
+    }
+    th {
+      background: #f4f4f4;
+    }
+    input[type="checkbox"] {
+      margin-right: 0.5rem;
+    }
+    del {
+      text-decoration: line-through;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+<h1>JetMD - 高速Markdownプロセッサー</h1>
+<p><a href="https://github.com" rel="noopener noreferrer"><img src="https://img.shields.io/badge/build-passing-green"></a><br>
+<a href="https://github.com" rel="noopener noreferrer"><img src="https://img.shields.io/badge/version-0.1.0-blue"></a></p>
+<h2>特徴</h2>
+<p>JetMDは<strong>高性能</strong>な<em>Markdownプロセッサー</em>です。</p>
+<h3>パフォーマンス</h3>
+<ul>
+<li>⚡ <strong>100 MB/s</strong>の処理速度</li>
+<li>🎯 <strong>&lt;3ms</strong>のレイテンシー（50KBドキュメント）</li>
+<li>💾 メモリ使用量は入力の<strong>1.5倍</strong>程度</li>
+</ul>
+<h2>インストール</h2>
+<pre><code>npm install faster-md
+# または
+pnpm add faster-md
+</code></pre>
+<h2>使用方法</h2>
+<pre><code>import { renderHtml } from 'faster-md';
+
+const html = await renderHtml('# Hello World');
+console.log(html);
+</code></pre>
+<h2>GFM機能</h2>
+<h3>テーブル</h3>
+<table>
+<thead>
+<tr><td>機能</td><td>サポート</td><td>パフォーマンス</td></tr>
+</thead>
+<tbody>
+<tr><td>CommonMark</td><td>✅</td><td>100 MB/s</td></tr>
+<tr><td>GFM</td><td>✅</td><td>95 MB/s</td></tr>
+<tr><td>MDX</td><td>🚧</td><td>TBD</td></tr>
+</tbody>
+</table>
+<h3>タスクリスト</h3>
+<ul>
+<li> パーサー実装</li>
+<li> WASM対応</li>
+<li> GFMサポート</li>
+<li> MDXサポート</li>
+<li> プラグインシステム</li>
+</ul>
+<h3>その他</h3>
+<p><del>取り消し線</del>もサポートしています。</p>
+<p>自動リンク: https://github.com/jp-knj/jetmd</p>
+<h2>ライセンス</h2>
+<p>MIT © 2024</p>
+
+</body>
+</html>

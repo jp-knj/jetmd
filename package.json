@@ -13,8 +13,8 @@
   "scripts": {
     "build": "pnpm -r --if-present build",
     "test": "pnpm -r --if-present test",
-    "lint": "biome check .",
-    "lint:fix": "biome check --apply .",
+    "lint": "biome check packages/ demo/",
+    "lint:fix": "biome check --apply packages/ demo/",
     "format": "biome format --write .",
     "clean": "pnpm -r clean",
     "changeset": "changeset",

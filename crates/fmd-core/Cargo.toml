@@ -14,7 +14,23 @@ memchr = "2.7"
 serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
+pulldown-cmark = { version = "0.12", default-features = false, features = ["html"] }
+pulldown-cmark-to-cmark = "18.0"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+web-sys = { version = "0.3", features = ["Performance", "Window"] }
 
 [dev-dependencies]
 proptest = { workspace = true }
 insta = { workspace = true }
+criterion = "0.5"
+
+[[bench]]
+name = "latency"
+harness = false
+path = "../../tests/benchmarks/latency.rs"
+
+[[bench]]
+name = "memory"
+harness = false
+path = "../../tests/benchmarks/memory.rs"

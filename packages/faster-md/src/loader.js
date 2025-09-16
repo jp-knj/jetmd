@@ -45,12 +45,16 @@ async function loadWasmModule() {
       const wasmBuffer = await readFile(wasmPath)
 
       // Import the JS bindings
-      const wasm = await import('../../../crates/fmd-wasm/pkg/fmd_wasm.js')
+      const wasmModule = await import('../../wasm/fmd_wasm.js')
 
-      // Initialize with the buffer
-      await wasm.default(wasmBuffer)
+      // Initialize the WASM module
+      if (wasmModule.default && typeof wasmModule.default === 'function') {
+        await wasmModule.default(wasmBuffer)
+      } else if (wasmModule.init && typeof wasmModule.init === 'function') {
+        await wasmModule.init(wasmBuffer)
+      }
 
-      return wasm
+      return wasmModule
     }
 
     // In browser environment

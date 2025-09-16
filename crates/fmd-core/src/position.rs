@@ -1,6 +1,21 @@
 // Position tracking utilities
 
-pub use crate::ast::{Point, Position};
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Position {
+    pub start: Point,
+    pub end: Point,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Point {
+    pub line: usize,
+    pub column: usize,
+    pub offset: usize,
+}
 
 /// Tracks position in source text
 #[derive(Debug, Clone)]

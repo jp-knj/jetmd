@@ -1,0 +1,72 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+// ブログ記事を取得
+const posts = await getCollection('blog');
+---
+
+<Layout title="JetMD + Astro Example">
+  <main>
+    <h1>⚡ JetMD + Astro</h1>
+    <p>高速Markdownプロセッサーを使用したAstroサイト</p>
+    
+    <section>
+      <h2>パフォーマンス</h2>
+      <ul>
+        <li>🚀 ~50 MB/s のスループット</li>
+        <li>⚡ 50KBドキュメント: &lt;3ms のレイテンシー</li>
+        <li>📦 WASMベースで高速</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>最近の記事</h2>
+      <ul>
+        {posts.map(post => (
+          <li>
+            <a href={`/blog/${post.slug}`}>
+              {post.data.title}
+            </a>
+            <time>{post.data.date}</time>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  main {
+    margin: auto;
+    padding: 1.5rem;
+    max-width: 60ch;
+  }
+  h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 0;
+  }
+  section {
+    margin-top: 2rem;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  li {
+    margin: 0.5rem 0;
+  }
+  a {
+    color: #0066cc;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  time {
+    color: #666;
+    font-size: 0.9em;
+    margin-left: 1rem;
+  }
+</style>

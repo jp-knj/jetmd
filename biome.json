@@ -48,6 +48,7 @@
     }
   },
   "files": {
+    "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.mjs", "**/*.cjs"],
     "ignore": [
       "**/node_modules",
       "**/dist",
@@ -58,9 +59,21 @@
       "target/**",
       "crates/*/target/**",
       "crates/*/pkg/**",
+      "crates/fmd-wasm/packages/wasm/**",
+      "crates/fmd-cli/packages/**",
       "packages/*/dist/**",
+      "packages/wasm/**",
       ".changeset/**",
-      "pkg/**"
+      "pkg/**",
+      "**/*.rs",
+      "**/*.md",
+      "**/*.toml",
+      "**/*.yaml",
+      "**/*.yml",
+      "**/*.html",
+      "**/*.sh",
+      "**/*.mdx",
+      ".husky/**"
     ]
   }
 }

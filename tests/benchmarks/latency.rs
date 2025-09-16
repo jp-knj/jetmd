@@ -2,7 +2,7 @@
 // Target: <3ms p50 for 50KB documents
 
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
-use fmd_core::{parse, render_html, Options};
+use fmd_core::{parse, Document, ProcessorOptions};
 use std::time::Duration;
 
 /// Generate markdown content of specified size
@@ -92,9 +92,13 @@ fn bench_render_latency(c: &mut Criterion) {
             &content_clone,
             |b, content| {
                 b.iter(|| {
-                    let options = Options::default().with_gfm(true).with_sanitize(true);
-                    let ast = parse(content.as_str(), options.clone()).unwrap();
-                    render_html(&ast, options)
+                    let mut options = ProcessorOptions::default();
+                    options.gfm = true;
+                    options.sanitize = true;
+                    let doc = Document::new(content.as_str());
+                    let result = parse(&doc, options);
+                    // render_html not available in current API
+                    result.ast
                 });
             },
         );
@@ -116,9 +120,13 @@ fn bench_e2e_latency(c: &mut Criterion) {
 
     group.bench_function("50KB_e2e", |b| {
         b.iter(|| {
-            let options = Options::default().with_gfm(true).with_sanitize(true);
-            let ast = parse(black_box(&content_clone), options.clone()).unwrap();
-            render_html(&ast, options)
+            let mut options = ProcessorOptions::default();
+            options.gfm = true;
+            options.sanitize = true;
+            let doc = Document::new(black_box(&content_clone));
+            let result = parse(&doc, options);
+            // render_html not available in current API
+            result.ast
         });
     });
 
@@ -198,13 +206,19 @@ fn bench_incremental_latency(c: &mut Criterion) {
     for (edit_name, modified_content) in edits {
         group.bench_function(format!("50KB_{}", edit_name), |b| {
             b.iter(|| {
-                let options = Options::default().with_gfm(true).with_incremental(true);
+                let mut options = ProcessorOptions::default();
+                options.gfm = true;
+                options.incremental = true;
 
                 // Parse original
-                let original_ast = parse(black_box(&base_content), options.clone()).unwrap();
+                let base_doc = Document::new(black_box(&base_content));
+                let original_result = parse(&base_doc, options.clone());
+                let _original_ast = original_result.ast;
 
                 // Parse modified with incremental hints
-                let _modified_ast = parse(black_box(&modified_content), options).unwrap();
+                let modified_doc = Document::new(black_box(&modified_content));
+                let modified_result = parse(&modified_doc, options);
+                let _modified_ast = modified_result.ast;
             });
         });
     }

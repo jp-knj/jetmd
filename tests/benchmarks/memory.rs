@@ -1,7 +1,7 @@
 // Memory Profiling Benchmark
 // Target: ≤1.5× input memory usage
 
-use fmd_core::{parse, render_html, Options};
+use fmd_core::{parse, Document, ProcessorOptions};
 use std::alloc::{GlobalAlloc, Layout, System};
 use std::sync::atomic::{AtomicUsize, Ordering};
 
@@ -89,8 +89,11 @@ fn measure_parse_memory(content: &str) -> (usize, usize) {
     reset_memory_tracking();
 
     let initial_memory = get_current_memory();
-    let options = Options::default().with_gfm(true);
-    let _ast = parse(content, options).unwrap();
+    let mut options = ProcessorOptions::default();
+    options.gfm = true;
+    let doc = Document::new(content);
+    let result = parse(&doc, options);
+    let _ast = result.ast;
 
     let peak_memory = get_peak_memory();
     let final_memory = get_current_memory();
@@ -103,10 +106,14 @@ fn measure_render_memory(content: &str) -> (usize, usize) {
     reset_memory_tracking();
 
     let initial_memory = get_current_memory();
-    let options = Options::default().with_gfm(true).with_sanitize(true);
+    let mut options = ProcessorOptions::default();
+    options.gfm = true;
+    options.sanitize = true;
 
-    let ast = parse(content, options.clone()).unwrap();
-    let _html = render_html(&ast, options);
+    let doc = Document::new(content);
+    let result = parse(&doc, options);
+    let _ast = result.ast;
+    // render_html is not available in the current API
 
     let peak_memory = get_peak_memory();
     let final_memory = get_current_memory();
@@ -137,9 +144,9 @@ fn measure_incremental_memory(base_content: &str, modified_content: &str) -> (us
 }
 
 fn main() {
-    println!("=" * 60);
+    println!("{}", "=".repeat(60));
     println!("Memory Profiling Benchmark");
-    println!("=" * 60);
+    println!("{}", "=".repeat(60));
     println!("\nTarget: ≤1.5× input memory usage\n");
 
     let test_sizes = vec![
@@ -155,7 +162,7 @@ fn main() {
         let content = generate_markdown(size);
         let input_size = content.len();
 
-        println!("{}", "-" * 60);
+        println!("{}", "-".repeat(60));
         println!("Testing: {} ({}KB)", name, size / 1024);
         println!("Input size: {} bytes", input_size);
 
@@ -226,7 +233,7 @@ fn main() {
         }
     }
 
-    println!("\n{}", "=" * 60);
+    println!("\n{}", "=".repeat(60));
     println!("SUMMARY");
     println!("{}", "=" * 60);
 

@@ -193,7 +193,7 @@ Each phase will have its own branch for parallel development:
 ## Phase 3.5: Polish
 **Branch**: `001-phase-3.5-polish`
 
-- [ ] T071 Create and checkout branch 001-phase-3.5-polish from 001-faster-md-mdx
+- [x] T071 Create and checkout branch 001-phase-3.5-polish from 001-faster-md-mdx
 
 ### Performance Validation
 - [ ] T072 Benchmark: Verify ≥50 MB/s WASM throughput in tests/benchmarks/wasm_perf.js

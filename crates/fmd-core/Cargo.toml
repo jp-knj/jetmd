@@ -18,3 +18,14 @@ thiserror = { workspace = true }
 [dev-dependencies]
 proptest = { workspace = true }
 insta = { workspace = true }
+criterion = "0.5"
+
+[[bench]]
+name = "latency"
+harness = false
+path = "../../tests/benchmarks/latency.rs"
+
+[[bench]]
+name = "memory"
+harness = false
+path = "../../tests/benchmarks/memory.rs"

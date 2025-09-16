@@ -241,7 +241,7 @@ fn main() {
 
     println!("\n{}", "=".repeat(60));
     println!("SUMMARY");
-    println!("{}", "=" * 60);
+    println!("{}", "=".repeat(60));
 
     if all_passed {
         println!("✅ PASS: All memory usage tests passed (≤1.5× input)");

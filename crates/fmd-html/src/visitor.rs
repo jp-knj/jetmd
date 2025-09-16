@@ -337,12 +337,6 @@ impl HtmlVisitor {
             NodeType::Yaml | NodeType::FrontMatter => {
                 // Skip rendering frontmatter in HTML output
             }
-            _ => {
-                // Fallback for unhandled types
-                for child in &node.children {
-                    self.visit(child);
-                }
-            }
         }
     }
 

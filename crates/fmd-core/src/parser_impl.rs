@@ -48,7 +48,9 @@ struct AstBuilder {
 
 struct ListContext {
     ordered: bool,
+    #[allow(dead_code)]
     start: Option<u64>,
+    #[allow(dead_code)]
     tight: bool,
 }
 

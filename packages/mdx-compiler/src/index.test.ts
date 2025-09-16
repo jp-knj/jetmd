@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { VERSION } from './index'
+import { VERSION } from './index.js'
 
 describe('mdx-compiler', () => {
   it('should export VERSION', () => {

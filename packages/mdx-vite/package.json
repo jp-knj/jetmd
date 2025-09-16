@@ -21,7 +21,9 @@
   },
   "dependencies": {
     "mdx-compiler": "workspace:*",
-    "faster-md": "workspace:*"
+    "faster-md": "workspace:*",
+    "@rollup/pluginutils": "^5.0.0",
+    "source-map": "^0.7.4"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

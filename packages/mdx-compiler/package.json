@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "acorn": "^8.11.0",
+    "acorn-jsx": "^5.3.2",
     "faster-md": "workspace:*"
   },
   "devDependencies": {

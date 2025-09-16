@@ -173,22 +173,22 @@ Each phase will have its own branch for parallel development:
 ## Phase 3.4: Integration
 **Branch**: `001-phase-3.4-integration`
 
-- [ ] T061 Create and checkout branch 001-phase-3.4-integration from 001-faster-md-mdx
+- [x] T061 Create and checkout branch 001-phase-3.4-integration from 001-faster-md-mdx
 
 ### CLI Implementation
-- [ ] T062 [P] Implement Rust CLI in crates/fmd-cli/src/main.rs
-- [ ] T063 [P] Create Node CLI wrapper in packages/faster-md-cli/src/cli.js
+- [x] T062 [P] Implement Rust CLI in crates/fmd-cli/src/main.rs
+- [x] T063 [P] Create Node CLI wrapper in packages/faster-md-cli/src/cli.js
 
 ### Vite Plugins
-- [ ] T064 [P] Create Markdown Vite plugin in packages/faster-md-vite/src/index.js
-- [ ] T065 [P] Create MDX Vite plugin in packages/mdx-vite/src/index.js
+- [x] T064 [P] Create Markdown Vite plugin in packages/faster-md-vite/src/index.js
+- [x] T065 [P] Create MDX Vite plugin in packages/mdx-vite/src/index.js
 
 ### Plugin System
-- [ ] T066 Implement plugin registry in packages/faster-md/src/plugins/registry.js
-- [ ] T067 [P] Create GFM plugin in packages/faster-md/src/plugins/gfm.js
-- [ ] T068 [P] Create frontmatter plugin in packages/faster-md/src/plugins/frontmatter.js
-- [ ] T069 [P] Create highlight plugin in packages/faster-md/src/plugins/highlight.js
-- [ ] T070 Create PR: Merge 001-phase-3.4-integration → 001-faster-md-mdx
+- [x] T066 Implement plugin registry in packages/faster-md/src/plugins/registry.js
+- [x] T067 [P] Create GFM plugin in packages/faster-md/src/plugins/gfm.js
+- [x] T068 [P] Create frontmatter plugin in packages/faster-md/src/plugins/frontmatter.js
+- [x] T069 [P] Create highlight plugin in packages/faster-md/src/plugins/highlight.js
+- [x] T070 Create PR: Merge 001-phase-3.4-integration → 001-faster-md-mdx
 
 ## Phase 3.5: Polish
 **Branch**: `001-phase-3.5-polish`

@@ -20,7 +20,9 @@
     "format": "biome format --write src"
   },
   "dependencies": {
-    "faster-md": "workspace:*"
+    "faster-md": "workspace:*",
+    "@rollup/pluginutils": "^5.0.0",
+    "gray-matter": "^4.0.3"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

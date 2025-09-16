@@ -58,8 +58,10 @@ fn bench_parse_latency(c: &mut Criterion) {
             &content_clone,
             |b, content| {
                 b.iter(|| {
-                    let options = Options::default().with_gfm(true);
-                    parse(black_box(content.as_str()), options)
+                    let mut options = ProcessorOptions::default();
+                    options.gfm = true;
+                    let doc = Document::new(black_box(content.as_str()));
+                    parse(&doc, options)
                 });
             },
         );
@@ -140,9 +142,12 @@ fn bench_e2e_latency(c: &mut Criterion) {
             for _ in 0..iters {
                 let iter_start = std::time::Instant::now();
 
-                let options = Options::default().with_gfm(true).with_sanitize(true);
-                let ast = parse(black_box(&content_clone), options.clone()).unwrap();
-                let _ = render_html(&ast, options);
+                let mut options = ProcessorOptions::default();
+                options.gfm = true;
+                options.sanitize = true;
+                let doc = Document::new(black_box(&content_clone));
+                let result = parse(&doc, options);
+                let _ = result.ast;
 
                 times.push(iter_start.elapsed());
             }

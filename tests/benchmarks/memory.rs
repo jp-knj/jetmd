@@ -126,13 +126,19 @@ fn measure_incremental_memory(base_content: &str, modified_content: &str) -> (us
     reset_memory_tracking();
 
     let initial_memory = get_current_memory();
-    let options = Options::default().with_gfm(true).with_incremental(true);
+    let mut options = ProcessorOptions::default();
+    options.gfm = true;
+    options.incremental = true;
 
     // Parse original
-    let original_ast = parse(base_content, options.clone()).unwrap();
+    let base_doc = Document::new(base_content);
+    let original_result = parse(&base_doc, options.clone());
+    let original_ast = original_result.ast;
 
     // Parse modified with incremental hints
-    let _modified_ast = parse(modified_content, options).unwrap();
+    let modified_doc = Document::new(modified_content);
+    let modified_result = parse(&modified_doc, options);
+    let _modified_ast = modified_result.ast;
 
     // Keep original AST alive to measure retention
     drop(original_ast);

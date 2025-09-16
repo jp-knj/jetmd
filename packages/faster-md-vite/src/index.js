@@ -288,6 +288,9 @@ function wrapInHtmlDocument(html) {
 `.trim()
 }
 
+// Export VERSION
+export const VERSION = '0.1.0'
+
 // Export additional utilities
 export { createFilter }
 

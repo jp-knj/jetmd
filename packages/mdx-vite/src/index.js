@@ -261,6 +261,9 @@ export function mdxPluginWithPreset(preset, options = {}) {
   })
 }
 
+// Export VERSION
+export const VERSION = '0.1.0'
+
 // Export utilities
 export { createFilter }
 

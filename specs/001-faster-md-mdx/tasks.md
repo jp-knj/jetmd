@@ -204,6 +204,7 @@ Each phase will have its own branch for parallel development:
 - [ ] T075 [P] Write API documentation in docs/api.md
 - [ ] T076 [P] Create migration guide in docs/migration.md
 - [ ] T077 [P] Update README.md with badges and examples
+  - [x] 2025-09-17 Author contributor guide in `AGENTS.md`
 
 ### Final Integration
 - [ ] T078 Run full conformance suite and fix failures

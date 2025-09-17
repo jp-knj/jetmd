@@ -197,8 +197,11 @@ Each phase will have its own branch for parallel development:
 
 ### Performance Validation
 - [ ] T072 Benchmark: Verify ≥50 MB/s WASM throughput in tests/benchmarks/wasm_perf.js
+  - [ ] 2025-09-17: 37.9 MB/s (fail) via direct WASM render call. Investigate cache layer and wasm SIMD.
 - [ ] T073 Benchmark: Verify <3ms p50 for 50KB docs in tests/benchmarks/latency.rs
+  - [x] 2025-09-17: 0.62 ms p50 (pass) across parse/render/incremental benches.
 - [ ] T074 Memory profiling: Verify ≤1.5× input usage in tests/benchmarks/memory.rs
+  - [ ] 2025-09-17: 86× input (fail) – current arena allocator retains full AST; needs compact mode.
 
 ### Documentation
 - [ ] T075 [P] Write API documentation in docs/api.md
@@ -209,6 +212,8 @@ Each phase will have its own branch for parallel development:
 ### Final Integration
 - [ ] T078 Run full conformance suite and fix failures
 - [ ] T079 Security audit with cargo-audit and npm audit
+  - [x] 2025-09-17: `cargo audit` (no advisories reported).
+  - [ ] 2025-09-17: `pnpm audit` blocked (ENOTFOUND registry.npmjs.org).
 - [ ] T080 Create example projects in examples/
 - [ ] T081 Manual testing with quickstart.md scenarios
 - [ ] T082 Create PR: Merge 001-phase-3.5-polish → 001-faster-md-mdx

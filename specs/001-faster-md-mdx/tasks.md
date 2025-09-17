@@ -256,10 +256,14 @@ Each phase will have its own branch for parallel development:
   - [x] 2025-09-17: Each package now exposes `release:prepack` + `prepublishOnly` to ensure build artifacts prior to publish.
 
 ### Publishing Configuration
-- [ ] T096 Configure npm registry authentication in .npmrc (with placeholder tokens)
-- [ ] T097 Set up crates.io API token configuration (documented in RELEASE.md)
-- [ ] T098 Create changeset configuration in .changeset/config.json
-- [ ] T099 Set up version bump strategy (patch/minor/major) guidelines
+- [x] T096 Configure npm registry authentication in .npmrc (with placeholder tokens)
+  - [x] 2025-09-17: Added placeholder NPM_TOKEN entry in `.npmrc` with instructions for scoped publish.
+- [x] T097 Set up crates.io API token configuration (documented in RELEASE.md)
+  - [x] 2025-09-17: Documented credentials setup in `docs/RELEASE.md` (see §1).
+- [x] T098 Create changeset configuration in .changeset/config.json
+  - [x] 2025-09-17: Updated base branch to `main` for release-ready Changesets config.
+- [x] T099 Set up version bump strategy (patch/minor/major) guidelines
+  - [x] 2025-09-17: Added table in `docs/RELEASE.md` detailing semantic bump policy.
 
 ### Release Automation
 - [ ] T100 Create GitHub Actions workflow for release in .github/workflows/release.yml

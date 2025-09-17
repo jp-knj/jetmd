@@ -198,10 +198,12 @@ Each phase will have its own branch for parallel development:
 ### Performance Validation
 - [ ] T072 Benchmark: Verify ≥50 MB/s WASM throughput in tests/benchmarks/wasm_perf.js
   - [ ] 2025-09-17: 37.9 MB/s (fail) via direct WASM render call. Investigate cache layer and wasm SIMD.
+  - [ ] ACTION: Evaluate swapping inline/JSX tokenization with `swc`/`oxc` parsing primitives and integrate `simdutf8` for string scanning.
 - [ ] T073 Benchmark: Verify <3ms p50 for 50KB docs in tests/benchmarks/latency.rs
   - [x] 2025-09-17: 0.62 ms p50 (pass) across parse/render/incremental benches.
 - [ ] T074 Memory profiling: Verify ≤1.5× input usage in tests/benchmarks/memory.rs
   - [ ] 2025-09-17: 86× input (fail) – current arena allocator retains full AST; needs compact mode.
+  - [ ] ACTION: Prototype `ropey` + `bumpalo` combination for incremental AST storage; replace arena to drop retained allocations.
 
 ### Documentation
 - [ ] T075 [P] Write API documentation in docs/api.md

@@ -1,0 +1,29 @@
+{
+  "name": "fmd-wasm",
+  "collaborators": [
+    "JetMD Contributors"
+  ],
+  "description": "WASM bindings for faster-md",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jp-knj/jetmd.git",
+    "directory": "packages/wasm"
+  },
+  "files": [
+    "fmd_wasm_bg.wasm",
+    "fmd_wasm.js",
+    "fmd_wasm.d.ts"
+  ],
+  "main": "fmd_wasm.js",
+  "homepage": "https://github.com/jp-knj/jetmd",
+  "types": "fmd_wasm.d.ts",
+  "author": "JetMD Contributors",
+  "bugs": {
+    "url": "https://github.com/jp-knj/jetmd/issues"
+  },
+  "keywords": [
+    "jetmd"
+  ]
+}

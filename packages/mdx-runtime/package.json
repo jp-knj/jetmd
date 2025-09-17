@@ -12,7 +12,9 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "vitest",
@@ -42,7 +44,15 @@
     "url": "https://github.com/jp-knj/jetmd.git",
     "directory": "packages/mdx-runtime"
   },
-  "keywords": ["mdx", "runtime", "react"],
-  "author": "",
-  "license": "MIT"
+  "keywords": [
+    "mdx",
+    "runtime",
+    "react"
+  ],
+  "author": "JetMD Contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jp-knj/jetmd/issues"
+  },
+  "homepage": "https://github.com/jp-knj/jetmd"
 }

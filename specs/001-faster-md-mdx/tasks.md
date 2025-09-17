@@ -224,10 +224,14 @@ Each phase will have its own branch for parallel development:
 - [ ] T083 Create and checkout branch 001-phase-3.6-release from 001-faster-md-mdx
 
 ### Package Configuration
-- [ ] T084 [P] Configure package.json files with name, version, description, keywords, repository
-- [ ] T085 [P] Set up Cargo.toml files with [package] metadata for crates.io publishing
-- [ ] T086 [P] Create .npmignore files for packages/ to exclude test and source files
-- [ ] T087 [P] Configure Cargo.toml exclude patterns for smaller crate sizes
+- [x] T084 [P] Configure package.json files with name, version, description, keywords, repository
+  - [x] 2025-09-17: Added authors, homepage, bugs, repo metadata across packages/* and root package.json.
+- [x] T085 [P] Set up Cargo.toml files with [package] metadata for crates.io publishing
+  - [x] 2025-09-17: Updated workspace metadata and propagated documentation/keywords/categories to crates.
+- [x] T086 [P] Create .npmignore files for packages/ to exclude test and source files
+  - [x] 2025-09-17: Added standard ignore template to packages/* (dist-only publish).
+- [x] T087 [P] Configure Cargo.toml exclude patterns for smaller crate sizes
+  - [x] 2025-09-17: Added shared exclude list to crates to strip tests/fixtures/docs from crates.io tarballs.
 
 ### pnpm-Specific Configuration
 - [ ] T088 [P] Configure pnpm catalogs for shared dependencies across packages

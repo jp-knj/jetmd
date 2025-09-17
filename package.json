@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "description": "High-performance Markdown/MDX processor with WASM-first architecture",
-  "author": "",
+  "author": "JetMD Contributors",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -31,5 +31,13 @@
     "typescript": "^5.3.0",
     "vitest": "^1.0.0"
   },
-  "packageManager": "pnpm@8.14.0"
+  "packageManager": "pnpm@8.14.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jp-knj/jetmd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jp-knj/jetmd/issues"
+  },
+  "homepage": "https://github.com/jp-knj/jetmd"
 }

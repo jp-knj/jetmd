@@ -6,7 +6,9 @@
   "bin": {
     "fmd": "./dist/cli.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "vitest",
@@ -37,7 +39,15 @@
     "url": "https://github.com/jp-knj/jetmd.git",
     "directory": "packages/faster-md-cli"
   },
-  "keywords": ["cli", "markdown", "converter"],
-  "author": "",
-  "license": "MIT"
+  "keywords": [
+    "cli",
+    "markdown",
+    "converter"
+  ],
+  "author": "JetMD Contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jp-knj/jetmd/issues"
+  },
+  "homepage": "https://github.com/jp-knj/jetmd"
 }

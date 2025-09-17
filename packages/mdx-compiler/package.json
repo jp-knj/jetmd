@@ -12,7 +12,9 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "vitest",
@@ -38,7 +40,16 @@
     "url": "https://github.com/jp-knj/jetmd.git",
     "directory": "packages/mdx-compiler"
   },
-  "keywords": ["mdx", "markdown", "jsx", "compiler"],
-  "author": "",
-  "license": "MIT"
+  "keywords": [
+    "mdx",
+    "markdown",
+    "jsx",
+    "compiler"
+  ],
+  "author": "JetMD Contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jp-knj/jetmd/issues"
+  },
+  "homepage": "https://github.com/jp-knj/jetmd"
 }

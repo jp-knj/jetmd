@@ -234,10 +234,14 @@ Each phase will have its own branch for parallel development:
   - [x] 2025-09-17: Added shared exclude list to crates to strip tests/fixtures/docs from crates.io tarballs.
 
 ### pnpm-Specific Configuration
-- [ ] T088 [P] Configure pnpm catalogs for shared dependencies across packages
-- [ ] T089 [P] Set up pnpm overrides for dependency resolution in root package.json
-- [ ] T090 [P] Configure pnpm's side-effects-cache for faster installs
-- [ ] T091 [P] Create pnpm scripts for monorepo commands (build:all, test:all, etc.)
+- [x] T088 [P] Configure pnpm catalogs for shared dependencies across packages
+  - [x] 2025-09-17: Expanded `pnpm-workspace.yaml` catalog to lock shared dev/prod deps (vite, astro, gray-matter, etc.).
+- [x] T089 [P] Set up pnpm overrides for dependency resolution in root package.json
+  - [x] 2025-09-17: Added `pnpm.overrides` ensuring consistent versions for acorn, commander, chalk, chokidar, vite, astro.
+- [x] T090 [P] Configure pnpm's side-effects-cache for faster installs
+  - [x] 2025-09-17: Created `.npmrc` enabling pnpm side-effects cache and exact saves.
+- [x] T091 [P] Create pnpm scripts for monorepo commands (build:all, test:all, etc.)
+  - [x] 2025-09-17: Added `build:all`, `test:all`, `lint:all`, `format:all`, `bench:all` scripts to root `package.json`.
 
 ### Build & Distribution
 - [ ] T092 Create release build script with wasm-opt optimization in scripts/build-release.sh

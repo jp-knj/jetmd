@@ -13,7 +13,9 @@
     "build": "tsc",
     "test": "vitest",
     "lint": "biome check src",
-    "format": "biome format --write src"
+    "format": "biome format --write src",
+    "release:prepack": "pnpm build",
+    "prepublishOnly": "pnpm run release:prepack"
   },
   "dependencies": {
     "faster-md": "workspace:*",

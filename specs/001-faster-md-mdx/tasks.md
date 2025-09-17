@@ -244,10 +244,14 @@ Each phase will have its own branch for parallel development:
   - [x] 2025-09-17: Added `build:all`, `test:all`, `lint:all`, `format:all`, `bench:all` scripts to root `package.json`.
 
 ### Build & Distribution
-- [ ] T092 Create release build script with wasm-opt optimization in scripts/build-release.sh
-- [ ] T093 Generate TypeScript definitions from WASM bindings in packages/faster-md/types/
-- [ ] T094 Create UMD and ESM bundles for browser usage in packages/faster-md/dist/
-- [ ] T095 Set up pnpm publish hooks with prepublishOnly scripts
+- [x] T092 Create release build script with wasm-opt optimization in scripts/build-release.sh
+  - [x] 2025-09-17: Added `scripts/build-release.sh` orchestrating Cargo, wasm-bindgen, wasm-opt, TS builds, and Rollup bundles.
+- [x] T093 Generate TypeScript definitions from WASM bindings in packages/faster-md/types/
+  - [x] 2025-09-17: Introduced `packages/faster-md/types/index.d.ts` and build step to refresh dts bundles.
+- [x] T094 Create UMD and ESM bundles for browser usage in packages/faster-md/dist/
+  - [x] 2025-09-17: Added `rollup.config.release.mjs` invoked from release script to emit CJS/ESM bundles.
+- [x] T095 Set up pnpm publish hooks with prepublishOnly scripts
+  - [x] 2025-09-17: Each package now exposes `release:prepack` + `prepublishOnly` to ensure build artifacts prior to publish.
 
 ### Publishing Configuration
 - [ ] T096 Configure npm registry authentication in .npmrc (with placeholder tokens)

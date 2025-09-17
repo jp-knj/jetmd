@@ -9,18 +9,26 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "browser": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      }
     }
   },
   "files": [
     "dist",
+    "types",
     "wasm"
   ],
   "scripts": {
     "build": "tsc",
     "test": "vitest",
     "lint": "biome check src",
-    "format": "biome format --write src"
+    "format": "biome format --write src",
+    "release:prepack": "pnpm build",
+    "prepublishOnly": "pnpm run release:prepack"
   },
   "dependencies": {},
   "devDependencies": {

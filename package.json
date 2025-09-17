@@ -25,7 +25,9 @@
     "test:all": "pnpm -r test",
     "lint:all": "pnpm -r lint",
     "format:all": "pnpm -r format",
-    "bench:all": "cargo bench --workspace"
+    "bench:all": "cargo bench --workspace",
+    "release:build": "scripts/build-release.sh",
+    "release:verify": "scripts/verify-release.sh"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.5.0",

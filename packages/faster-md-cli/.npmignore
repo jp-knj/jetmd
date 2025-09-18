@@ -1,0 +1,14 @@
+src/
+__tests__/
+test/
+tests/
+**/*.test.*
+**/*.spec.*
+tsconfig.json
+tsconfig.*.json
+vitest.config.*
+.eslintrc*
+*.log
+coverage/
+.vscode/
+.DS_Store

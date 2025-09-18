@@ -5,7 +5,7 @@
   "fixed": [],
   "linked": [["faster-md", "mdx-compiler", "mdx-runtime", "faster-md-vite", "mdx-vite"]],
   "access": "public",
-  "baseBranch": "001-faster-md-mdx",
+  "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [],
   "privatePackages": {

@@ -1,13 +1,13 @@
 [workspace]
 resolver = "2"
 members = [
-    "crates/fmd-core",
-    "crates/fmd-gfm",
-    "crates/fmd-html",
-    "crates/fmd-slug",
-    "crates/fmd-wasm",
-    "crates/fmd-cli",
-    "crates/mdx-core",
+  "crates/fmd-core",
+  "crates/fmd-gfm",
+  "crates/fmd-html",
+  "crates/fmd-slug",
+  "crates/fmd-wasm",
+  "crates/fmd-cli",
+  "crates/mdx-core",
 ]
 
 [workspace.package]
@@ -15,8 +15,11 @@ version = "0.1.0"
 authors = ["JetMD Contributors"]
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/yourusername/jetmd"
-homepage = "https://github.com/yourusername/jetmd"
+repository = "https://github.com/jp-knj/jetmd"
+homepage = "https://github.com/jp-knj/jetmd"
+documentation = "https://github.com/jp-knj/jetmd"
+keywords = ["markdown", "mdx", "wasm", "parser"]
+categories = ["text-processing", "web-programming"]
 rust-version = "1.75"
 
 [workspace.dependencies]
@@ -51,7 +54,7 @@ lto = true
 codegen-units = 1
 
 [profile.release.package.fmd-wasm]
-opt-level = "z"  # Optimize for size in WASM
+opt-level = "z" # Optimize for size in WASM
 
 [profile.dev]
 opt-level = 0

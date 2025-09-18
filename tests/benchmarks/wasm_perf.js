@@ -5,14 +5,8 @@
  * Target: ≥50 MB/s throughput
  */
 
-import { readFile } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
 import { performance } from 'node:perf_hooks'
-import { fileURLToPath } from 'node:url'
-import { parse, renderHtml } from '../../packages/faster-md/dist/index.js'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+import { getWasmInstance, parse } from '../../packages/faster-md/dist/index.js'
 
 // Test documents of various sizes
 const TEST_DOCS = {
@@ -76,7 +70,7 @@ async function runBenchmark(doc, iterations = 100) {
 
   // Warmup
   for (let i = 0; i < 10; i++) {
-    await renderHtml(doc.content, { gfm: true })
+    await renderMarkdown(doc.content, { gfm: true })
   }
 
   // Benchmark
@@ -85,7 +79,7 @@ async function runBenchmark(doc, iterations = 100) {
 
   for (let i = 0; i < iterations; i++) {
     const iterStart = performance.now()
-    await renderHtml(doc.content, { gfm: true })
+    await renderMarkdown(doc.content, { gfm: true })
     const iterEnd = performance.now()
     times.push(iterEnd - iterStart)
   }
@@ -164,6 +158,11 @@ async function runParseBenchmark(doc, iterations = 100) {
   return mbPerSecond
 }
 
+async function renderMarkdown(markdown, options) {
+  const wasm = await getWasmInstance()
+  return wasm.renderHtml(markdown, options)
+}
+
 /**
  * Main benchmark runner
  */
@@ -191,9 +190,9 @@ async function main() {
   }
 
   // Summary
-  console.log('\n' + '=' * 60)
+  console.log(`\n${'='.repeat(60)}`)
   console.log('SUMMARY')
-  console.log('=' * 60)
+  console.log('='.repeat(60))
 
   console.log('\n Performance by Document Size:')
   for (const result of results) {
@@ -209,7 +208,7 @@ async function main() {
   const avgThroughput = results.reduce((a, b) => a + b.throughput, 0) / results.length
   const passedTarget = avgThroughput >= TARGET_THROUGHPUT
 
-  console.log('\n' + '-' * 60)
+  console.log(`\n${'-'.repeat(60)}`)
   console.log(`Average throughput: ${avgThroughput.toFixed(2)} MB/s`)
   console.log(`Target throughput: ${TARGET_THROUGHPUT} MB/s`)
   console.log(
@@ -223,7 +222,7 @@ async function main() {
   if (mediumResult) {
     console.log('\n50KB Document Performance (T073):')
     console.log(`  P50 latency: ${mediumResult.p50.toFixed(2)} ms`)
-    console.log(`  Target: <3ms`)
+    console.log('  Target: <3ms')
     console.log(`  Status: ${mediumResult.p50 < 3 ? '✅ PASS' : '❌ FAIL'}`)
   }
 

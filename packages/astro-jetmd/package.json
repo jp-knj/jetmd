@@ -16,7 +16,9 @@
   ],
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "release:prepack": "pnpm build",
+    "prepublishOnly": "pnpm run release:prepack"
   },
   "keywords": [
     "astro",
@@ -25,7 +27,7 @@
     "jetmd",
     "mdx"
   ],
-  "author": "",
+  "author": "JetMD Contributors",
   "license": "MIT",
   "dependencies": {
     "faster-md": "workspace:*"
@@ -38,5 +40,14 @@
     "astro": "^4.0.0",
     "typescript": "^5.3.0",
     "vite": "^5.4.20"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jp-knj/jetmd.git",
+    "directory": "packages/astro-jetmd"
+  },
+  "bugs": {
+    "url": "https://github.com/jp-knj/jetmd/issues"
+  },
+  "homepage": "https://github.com/jp-knj/jetmd"
 }

@@ -6,7 +6,19 @@ edition.workspace = true
 license.workspace = true
 repository.workspace = true
 homepage.workspace = true
+documentation.workspace = true
+keywords.workspace = true
+categories.workspace = true
 rust-version.workspace = true
+exclude = [
+  "tests/**",
+  "benches/**",
+  "examples/**",
+  "fixtures/**",
+  "scripts/**",
+  "docs/**",
+]
+
 description = "HTML renderer for faster-md AST"
 
 [dependencies]

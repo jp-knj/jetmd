@@ -9,15 +9,26 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "browser": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      }
     }
   },
-  "files": ["dist", "wasm"],
+  "files": [
+    "dist",
+    "types",
+    "wasm"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "vitest",
     "lint": "biome check src",
-    "format": "biome format --write src"
+    "format": "biome format --write src",
+    "release:prepack": "pnpm build",
+    "prepublishOnly": "pnpm run release:prepack"
   },
   "dependencies": {},
   "devDependencies": {
@@ -34,7 +45,17 @@
     "url": "https://github.com/jp-knj/jetmd.git",
     "directory": "packages/faster-md"
   },
-  "keywords": ["markdown", "parser", "wasm", "commonmark", "gfm"],
-  "author": "",
-  "license": "MIT"
+  "keywords": [
+    "markdown",
+    "parser",
+    "wasm",
+    "commonmark",
+    "gfm"
+  ],
+  "author": "JetMD Contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jp-knj/jetmd/issues"
+  },
+  "homepage": "https://github.com/jp-knj/jetmd"
 }

@@ -1,0 +1,97 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Set to true to skip publishing"
+        required: false
+        default: "false"
+  push:
+    branches:
+      - main
+    paths:
+      - '.changeset/*'
+      - 'packages/**'
+      - 'crates/**'
+      - 'scripts/**'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
+      DRY_RUN: ${{ github.event.inputs.dry_run }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8.14.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy,rustfmt
+
+      - name: Install wasm tools
+        run: |
+          cargo install wasm-bindgen-cli --locked || true
+          cargo install wasm-opt --locked || true
+
+      - name: Run verification
+        run: pnpm release:verify
+
+      - name: Build release artifacts
+        run: pnpm release:build
+
+      - name: Publish npm packages
+        if: env.DRY_RUN != 'true'
+        run: pnpm release
+
+      - name: Publish crates
+        if: env.DRY_RUN != 'true'
+        run: |
+          for crate in fmd-core fmd-html fmd-gfm fmd-slug fmd-wasm fmd-cli mdx-core; do
+            cargo publish --package "$crate"
+          done
+
+      - name: Generate changelog
+        run: pnpm changeset status --verbose
+
+      - name: Upload release artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-release
+          path: dist-release
+          if-no-files-found: warn
+
+      - name: Create GitHub release
+        if: env.DRY_RUN != 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          draft: true
+          files: |
+            dist-release/faster-md/bundle.cjs
+            dist-release/faster-md/bundle.mjs
+            dist-release/wasm/fmd_wasm_bg.wasm
+
+      - name: Post status
+        if: always()
+        run: echo "Release workflow completed"

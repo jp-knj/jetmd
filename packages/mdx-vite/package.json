@@ -12,12 +12,16 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "vitest",
     "lint": "biome check src",
-    "format": "biome format --write src"
+    "format": "biome format --write src",
+    "release:prepack": "pnpm build",
+    "prepublishOnly": "pnpm run release:prepack"
   },
   "dependencies": {
     "mdx-compiler": "workspace:*",
@@ -43,7 +47,15 @@
     "url": "https://github.com/jp-knj/jetmd.git",
     "directory": "packages/mdx-vite"
   },
-  "keywords": ["vite", "vite-plugin", "mdx"],
-  "author": "",
-  "license": "MIT"
+  "keywords": [
+    "vite",
+    "vite-plugin",
+    "mdx"
+  ],
+  "author": "JetMD Contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jp-knj/jetmd/issues"
+  },
+  "homepage": "https://github.com/jp-knj/jetmd"
 }

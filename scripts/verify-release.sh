@@ -7,7 +7,7 @@ pushd "$ROOT_DIR" >/dev/null
 
 pnpm install --frozen-lockfile
 pnpm lint:all
-pnpm test:all
+pnpm test:all -- --run
 cargo test --workspace
 
 # Optional: run wasm smoke test if node available

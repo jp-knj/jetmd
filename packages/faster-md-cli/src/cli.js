@@ -354,8 +354,8 @@ async function handleStats(files, options) {
 
 async function handleBench(files, options) {
   const inputFiles = await resolveFiles(files || options.input || [])
-  const iterations = parseInt(options.iterations, 10)
-  const warmup = parseInt(options.warmup, 10)
+  const iterations = Number.parseInt(options.iterations, 10)
+  const warmup = Number.parseInt(options.warmup, 10)
 
   for (const file of inputFiles) {
     const content = await readFile(file, 'utf-8')

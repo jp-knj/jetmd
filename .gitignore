@@ -30,6 +30,7 @@ pnpm-debug.log*
 
 # Build outputs
 dist/
+dist-release/
 build/
 out/
 *.wasm

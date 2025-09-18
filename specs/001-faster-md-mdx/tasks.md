@@ -266,16 +266,24 @@ Each phase will have its own branch for parallel development:
   - [x] 2025-09-17: Added table in `docs/RELEASE.md` detailing semantic bump policy.
 
 ### Release Automation
-- [ ] T100 Create GitHub Actions workflow for release in .github/workflows/release.yml
-- [ ] T101 Set up automatic changelog generation from changesets
-- [ ] T102 Configure GitHub release creation with artifacts (WASM files, bundles)
-- [ ] T103 Add release verification tests in scripts/verify-release.sh
+- [x] T100 Create GitHub Actions workflow for release in .github/workflows/release.yml
+  - [x] 2025-09-17: Added `release.yml` workflow supporting dry-run, artifact upload, and GH draft release.
+- [x] T101 Set up automatic changelog generation from changesets
+  - [x] 2025-09-17: `release.yml` invokes `pnpm changeset status --verbose` (logs to CI run) and `docs/RELEASE.md` describes usage.
+- [x] T102 Configure GitHub release creation with artifacts (WASM files, bundles)
+  - [x] 2025-09-17: Workflow uploads bundles and creates draft release attaching CJS/ESM/WASM outputs.
+- [x] T103 Add release verification tests in scripts/verify-release.sh
+  - [x] 2025-09-17: `scripts/verify-release.sh` now ensures dist artifacts exist and runs smoke benchmarks.
 
 ### Documentation & Process
-- [ ] T104 [P] Create RELEASE.md with step-by-step release process
-- [ ] T105 [P] Document version compatibility matrix in docs/compatibility.md
-- [ ] T106 [P] Set up release notes template in .github/release-template.md
-- [ ] T107 Create post-release checklist (npm verify, crates.io verify, CDN update)
+- [x] T104 [P] Create RELEASE.md with step-by-step release process
+  - [x] 2025-09-17: Added `docs/RELEASE.md` covering prerequisites, workflow, and troubleshooting.
+- [x] T105 [P] Document version compatibility matrix in docs/compatibility.md
+  - [x] 2025-09-17: Added starter table outlining version coverage.
+- [x] T106 [P] Set up release notes template in .github/release-template.md
+  - [x] 2025-09-17: Added template with changelog/verification sections.
+- [x] T107 Create post-release checklist (npm verify, crates.io verify, CDN update)
+  - [x] 2025-09-17: Added `docs/post-release-checklist.md` capturing verification steps.
 - [ ] T108 Create PR: Merge 001-phase-3.6-release → 001-faster-md-mdx
 
 ## Dependencies

@@ -1,5 +1,6 @@
 import type { AstroIntegration } from 'astro'
 import { renderHtml } from 'faster-md'
+import matter from 'gray-matter'
 import type { Plugin as VitePlugin } from 'vite'
 
 export interface AstroJetMDOptions {
@@ -129,33 +130,26 @@ function jetMDVitePlugin(options: AstroJetMDOptions): VitePlugin {
 }
 
 /**
- * フロントマターを抽出
+ * フロントマターを抽出 (gray-matterを使用)
  */
 function extractFrontmatter(content: string): {
   content: string
   frontmatter: Record<string, unknown>
 } {
-  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n/
-  const match = content.match(frontmatterRegex)
-
-  if (match) {
-    const frontmatterContent = match[1]
-    const mainContent = content.slice(match[0].length)
-
-    // 簡易的なYAMLパース（実際のプロジェクトではyamlライブラリを使用）
-    const frontmatter: Record<string, unknown> = {}
-    for (const line of frontmatterContent.split('\n')) {
-      const [key, ...valueParts] = line.split(':')
-      if (key && valueParts.length) {
-        const value = valueParts.join(':').trim()
-        frontmatter[key.trim()] = value.replace(/^["']|["']$/g, '')
-      }
+  try {
+    const { content: mainContent, data } = matter(content)
+    return {
+      content: mainContent,
+      frontmatter: data,
     }
-
-    return { content: mainContent, frontmatter }
+  } catch (error) {
+    // フロントマターのパースに失敗した場合は、元のコンテンツをそのまま返す
+    console.warn('Failed to parse frontmatter:', error)
+    return {
+      content,
+      frontmatter: {},
+    }
   }
-
-  return { content, frontmatter: {} }
 }
 
 /**

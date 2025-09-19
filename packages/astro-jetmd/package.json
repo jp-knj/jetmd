@@ -30,7 +30,8 @@
   "author": "JetMD Contributors",
   "license": "MIT",
   "dependencies": {
-    "faster-md": "workspace:*"
+    "faster-md": "^0.1.0",
+    "gray-matter": "^4.0.3"
   },
   "peerDependencies": {
     "astro": "^4.0.0"

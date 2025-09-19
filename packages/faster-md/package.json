@@ -19,8 +19,9 @@
   },
   "files": [
     "dist",
-    "types",
-    "wasm"
+    "types", 
+    "wasm",
+    "src"
   ],
   "scripts": {
     "build": "tsc",
@@ -28,12 +29,14 @@
     "lint": "biome check src",
     "format": "biome format --write src",
     "release:prepack": "pnpm build",
+    "prepare": "pnpm build",
     "prepublishOnly": "pnpm run release:prepack"
   },
-  "dependencies": {},
+  "dependencies": {
+    "typescript": "^5.3.0"
+  },
   "devDependencies": {
     "@types/node": "^20.10.0",
-    "typescript": "^5.3.0",
     "vitest": "^1.0.0",
     "@biomejs/biome": "^1.5.0"
   },

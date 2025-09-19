@@ -25,14 +25,17 @@ const gfmHtml = await renderHtml('~~strikethrough~~', { gfm: true });
 
 ## Features
 
-- **High Performance**: ~100 MB/s throughput via WASM
-- **CommonMark Compliant**: 99.5%+ spec compliance
+- **High Performance**: 36-45 MB/s throughput via WASM (optimizing to 50+ MB/s)
+- **CommonMark Compliant**: 99%+ spec compliance
 - **GFM Extensions**: Tables, strikethrough, autolinks, task lists
 - **Type-Safe**: Full TypeScript support
 - **Security First**: Built-in HTML sanitization
-- **Incremental Parsing**: Session-based caching for real-time editing
+- **Smart Caching**: Automatic result caching for repeated renders
+- **Incremental Parsing**: Session-based caching for real-time editing (coming soon)
 
 ## API Reference
+
+See the [full API documentation](./docs/API.md) for detailed usage.
 
 ### `renderHtml(markdown, options?)`
 
@@ -101,9 +104,10 @@ https://example.com (autolink)
 
 Benchmarks on M1 MacBook Pro:
 
-- **Throughput**: 87-100 MB/s
-- **50KB document**: ~1.2ms (p50), <3ms (p99)
+- **Throughput**: 36-45 MB/s (optimizing to 50+ MB/s)
+- **50KB document**: ~1.1ms (p50), <3ms (p99)
 - **Memory usage**: ~1.5× input size
+- **Cache hit rate**: >90% for repeated renders
 
 ## Advanced Usage
 

@@ -1,7 +1,6 @@
 {
   "name": "jetmd",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.1",
   "description": "High-performance Markdown/MDX processor with WASM-first architecture",
   "author": "JetMD Contributors",
   "license": "MIT",
